@@ -371,11 +371,11 @@
     fetch(FORM_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({
-        message: message,
-        email: emailEl.value.trim() || '(not provided)',
-        page: 'robsaiadvisor.com'
-      })
+      body: JSON.stringify(
+        emailEl.value.trim()
+          ? { message: message, email: emailEl.value.trim(), page: 'robsaiadvisor.com' }
+          : { message: message, page: 'robsaiadvisor.com' }
+      )
     }).then(function(res){
       if (!res.ok) throw new Error('bad status');
       // Success: Luma responds
