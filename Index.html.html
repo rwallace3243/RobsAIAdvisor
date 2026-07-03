@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Synergies4 AI Consulting — Coach Luma</title>
+<meta name="description" content="Talk with Coach Luma, Synergies4's Digital AI Avatar. Share your goal and we'll guide the right next step.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1b2a4a;
+    --blue:#2f7df6;
+    --blue-dark:#1f63d6;
+    --ink:#3d4a63;
+    --line:#dde6f5;
+    --halo:#e9f1ff;
+    --bg:#ffffff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;
+    background:var(--bg);
+    color:var(--navy);
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+  }
+  header{padding:22px 30px}
+  header img{height:74px;width:auto;display:block}
+
+  .stage{
+    flex:1;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    gap:40px;
+    max-width:1060px;
+    width:100%;
+    margin:0 auto;
+    padding:0 30px;
+  }
+
+  /* Luma + ripple halo */
+  .luma-wrap{
+    position:relative;
+    flex:0 0 300px;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+  }
+  .rings{
+    position:absolute;
+    bottom:40px;left:50%;
+    width:520px;height:520px;
+    transform:translateX(-50%);
+    border-radius:50%;
+    background:
+      radial-gradient(circle, transparent 30%, var(--halo) 31%, transparent 33%,
+      transparent 45%, var(--halo) 46%, transparent 48%,
+      transparent 60%, var(--halo) 61%, transparent 63%);
+    z-index:0;
+    pointer-events:none;
+  }
+  .luma-wrap img{
+    position:relative;z-index:1;
+    width:100%;max-width:300px;display:block;
+  }
+  .greet{
+    position:absolute;z-index:2;
+    top:-14px;left:-30px;
+    max-width:230px;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:16px 16px 16px 4px;
+    box-shadow:0 10px 30px rgba(27,42,74,.10);
+    padding:14px 16px;
+    font-size:14.5px;line-height:1.45;color:var(--ink);
+  }
+  .greet strong{color:var(--blue)}
+
+  /* Right column */
+  .panel{
+    flex:1;
+    max-width:560px;
+    padding:30px 0 70px;
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+  }
+  h1{
+    font-size:clamp(40px,6vw,64px);
+    font-weight:800;
+    letter-spacing:-.02em;
+    line-height:1.05;
+  }
+  h1 .you{color:var(--blue)}
+  .sub{
+    margin:18px auto 30px;
+    max-width:420px;
+    color:var(--ink);
+    font-size:16.5px;line-height:1.55;
+  }
+  body.chatting h1{font-size:clamp(26px,3.5vw,34px)}
+  body.chatting .sub{display:none}
+
+  /* Chat log */
+  .chatlog{
+    display:none;
+    text-align:left;
+    margin:14px 0 16px;
+    max-height:46vh;
+    overflow-y:auto;
+    padding:4px 6px 4px 2px;
+    scroll-behavior:smooth;
+  }
+  body.chatting .chatlog{display:block}
+  .msg{
+    max-width:85%;
+    margin:8px 0;
+    padding:12px 16px;
+    border-radius:16px;
+    font-size:15.5px;line-height:1.5;
+    animation:pop .18s ease-out;
+  }
+  @keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .msg.user{
+    margin-left:auto;
+    background:var(--blue);
+    color:#fff;
+    border-bottom-right-radius:4px;
+  }
+  .msg.luma{
+    margin-right:auto;
+    background:#f4f8ff;
+    border:1px solid var(--line);
+    color:var(--ink);
+    border-bottom-left-radius:4px;
+  }
+  .msg.luma b{color:var(--blue);font-weight:700}
+  .msg.thinking{
+    color:#9aa8c2;font-style:italic;
+    background:#f8faff;border:1px dashed var(--line);
+  }
+
+  .inputrow{
+    display:flex;align-items:flex-end;gap:10px;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:26px;
+    box-shadow:0 14px 34px rgba(27,42,74,.10);
+    padding:8px 8px 8px 20px;
+  }
+  textarea{
+    flex:1;border:0;outline:0;resize:none;
+    font:inherit;font-size:16px;color:var(--navy);
+    line-height:1.45;
+    min-height:32px;max-height:180px;
+    padding:9px 0;
+    background:transparent;
+  }
+  textarea::placeholder{color:#9aa8c2}
+  .mic{
+    flex:0 0 46px;height:46px;width:46px;
+    border:0;border-radius:50%;
+    background:var(--blue);
+    color:#fff;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    transition:background .15s;
+  }
+  .mic:hover{background:var(--blue-dark)}
+  .mic svg{width:21px;height:21px}
+  .mic.listening{background:#e14a4a;animation:pulse 1.4s infinite}
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(225,74,74,.45)}
+    70%{box-shadow:0 0 0 16px rgba(225,74,74,0)}
+    100%{box-shadow:0 0 0 0 rgba(225,74,74,0)}
+  }
+  @media (prefers-reduced-motion:reduce){.mic.listening{animation:none}}
+
+  .or{margin:16px 0 12px;color:#9aa8c2;font-size:13px;font-weight:600;letter-spacing:.08em}
+  body.chatting .or{display:none}
+
+  .speakbtn{
+    display:inline-flex;align-items:center;gap:9px;
+    border:1px solid var(--line);
+    background:#fff;color:var(--blue);
+    font:inherit;font-weight:600;font-size:15px;
+    padding:12px 22px;border-radius:999px;
+    box-shadow:0 8px 22px rgba(27,42,74,.08);
+    cursor:pointer;transition:border-color .15s;
+  }
+  .speakbtn:hover{border-color:var(--blue)}
+  .speakbtn.listening{color:#e14a4a;border-color:#e14a4a}
+  body.chatting .speakbtn{display:none}
+
+  .emailrow{margin-top:22px}
+  .emailrow input{
+    width:100%;max-width:360px;
+    font:inherit;font-size:15px;color:var(--navy);
+    border:1px solid var(--line);border-radius:999px;
+    padding:11px 20px;outline:0;
+  }
+  .emailrow input:focus{border-color:var(--blue)}
+  .emailrow input::placeholder{color:#9aa8c2}
+
+  .submit{
+    margin-top:20px;
+    border:0;border-radius:999px;
+    background:var(--blue);color:#fff;
+    font:inherit;font-weight:700;font-size:16px;
+    padding:14px 46px;cursor:pointer;
+    box-shadow:0 12px 26px rgba(47,125,246,.35);
+    transition:background .15s,transform .1s;
+  }
+  .submit:hover{background:var(--blue-dark)}
+  .submit:active{transform:translateY(1px)}
+  .submit:disabled{opacity:.55;cursor:default}
+  body.chatting .submit{margin-top:12px;padding:12px 36px}
+
+  .note{margin-top:14px;font-size:13px;color:#9aa8c2;min-height:18px}
+  .note.error{color:#c43d3d}
+
+  button:focus-visible,textarea:focus-visible,input:focus-visible{
+    outline:3px solid rgba(47,125,246,.45);outline-offset:2px;
+  }
+
+  footer{
+    text-align:center;color:#9aa8c2;font-size:12.5px;
+    padding:14px 20px 20px;
+  }
+
+  @media (max-width:760px){
+    .stage{flex-direction:column-reverse;align-items:center;gap:6px}
+    .panel{padding:8px 0 26px}
+    .luma-wrap{flex:0 0 auto;width:210px}
+    .rings{width:360px;height:360px;bottom:20px}
+    .greet{left:-46px;top:-6px;max-width:190px;font-size:13.5px}
+    header{padding:16px 20px}
+    header img{height:56px}
+    body.chatting .luma-wrap{width:130px}
+    body.chatting .greet{display:none}
+    .chatlog{max-height:40vh}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="Logo.png" alt="Synergies4 AI Consulting">
+</header>
+
+<main class="stage">
+  <div class="luma-wrap">
+    <div class="rings" aria-hidden="true"></div>
+    <div class="greet" id="greet">
+      Hi, I'm <strong>Coach Luma</strong>, Synergies4's Digital AI Avatar. What's on your mind today?
+    </div>
+    <img src="Luma.png" alt="Coach Luma, Synergies4's digital AI avatar">
+  </div>
+
+  <div class="panel">
+    <h1>Why are <span class="you">you</span> here?</h1>
+    <p class="sub">Let's start a conversation. Share your goal and I'll guide the right next step.</p>
+
+    <div class="chatlog" id="chatlog" aria-live="polite"></div>
+
+    <div class="inputrow">
+      <textarea id="message" rows="1" placeholder="Type your answer here..." aria-label="Your answer"></textarea>
+      <button class="mic" id="micBtn" type="button" aria-label="Speak your answer" title="Speak your answer">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 15a4 4 0 0 0 4-4V6a4 4 0 1 0-8 0v5a4 4 0 0 0 4 4Z"/>
+          <path d="M19 11a1 1 0 1 0-2 0 5 5 0 0 1-10 0 1 1 0 1 0-2 0 7 7 0 0 0 6 6.93V20H8a1 1 0 1 0 0 2h8a1 1 0 1 0 0-2h-3v-2.07A7 7 0 0 0 19 11Z"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="or">OR</div>
+    <button class="speakbtn" id="speakBtn" type="button">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M4 10a1 1 0 0 1 1 1v2a1 1 0 1 1-2 0v-2a1 1 0 0 1 1-1Zm4-4a1 1 0 0 1 1 1v10a1 1 0 1 1-2 0V7a1 1 0 0 1 1-1Zm4-3a1 1 0 0 1 1 1v16a1 1 0 1 1-2 0V4a1 1 0 0 1 1-1Zm4 4a1 1 0 0 1 1 1v8a1 1 0 1 1-2 0V8a1 1 0 0 1 1-1Zm4 3a1 1 0 0 1 1 1v2a1 1 0 1 1-2 0v-2a1 1 0 0 1 1-1Z"/>
+      </svg>
+      <span id="speakLabel">Tap to speak</span>
+    </button>
+
+    <div class="emailrow" id="emailRow">
+      <input type="email" id="email" placeholder="Your email (optional, so we can follow up)" aria-label="Your email (optional)">
+    </div>
+
+    <div>
+      <button class="submit" id="submitBtn" type="button">Submit</button>
+    </div>
+    <div class="note" id="note"></div>
+  </div>
+</main>
+
+<footer>© 2026 Synergies4 AI Consulting · robsaiadvisor.com</footer>
+
+<script>
+(function(){
+  // Your two backend endpoints:
+  var BRAIN_ENDPOINT = "https://s4-luma-brain.s4ai.workers.dev";   // Cloudflare Worker (Gemini)
+  var FORM_ENDPOINT  = "https://formspree.io/f/xykqlkbo";          // Formspree (lead capture)
+
+  var msgEl = document.getElementById('message');
+  var emailEl = document.getElementById('email');
+  var emailRow = document.getElementById('emailRow');
+  var micBtn = document.getElementById('micBtn');
+  var speakBtn = document.getElementById('speakBtn');
+  var speakLabel = document.getElementById('speakLabel');
+  var submitBtn = document.getElementById('submitBtn');
+  var note = document.getElementById('note');
+  var chatlog = document.getElementById('chatlog');
+  var greet = document.getElementById('greet');
+
+  var history = [];       // [{role:'user'|'luma', text}]
+  var leadSent = false;   // Formspree fires once, on the first message
+
+  function autosize(){
+    msgEl.style.height = 'auto';
+    msgEl.style.height = Math.min(msgEl.scrollHeight, 180) + 'px';
+  }
+  msgEl.addEventListener('input', autosize);
+
+  // Enter sends (Shift+Enter = newline)
+  msgEl.addEventListener('keydown', function(e){
+    if (e.key === 'Enter' && !e.shiftKey){
+      e.preventDefault();
+      submitBtn.click();
+    }
+  });
+
+  // ---- Speech to text (live transcript) ----
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var recog = null;
+  var listening = false;
+  var finalText = '';
+
+  if (SR) {
+    recog = new SR();
+    recog.lang = 'en-US';
+    recog.continuous = true;
+    recog.interimResults = true;
+
+    recog.onresult = function(e){
+      var interim = '';
+      for (var i = e.resultIndex; i < e.results.length; i++){
+        var t = e.results[i][0].transcript;
+        if (e.results[i].isFinal) { finalText += t + ' '; }
+        else { interim += t; }
+      }
+      msgEl.value = (finalText + interim).trim();
+      autosize();
+    };
+    recog.onerror = function(e){
+      stopListening();
+      if (e.error === 'not-allowed') {
+        setNote("Microphone access was blocked. You can allow it in your browser's site settings, or just type instead.", true);
+      } else if (e.error !== 'aborted' && e.error !== 'no-speech') {
+        setNote("Speech recognition hit a snag — feel free to type instead.", true);
+      }
+    };
+    recog.onend = function(){ if (listening) { stopListening(); } };
+  } else {
+    micBtn.style.display = 'none';
+    speakBtn.style.display = 'none';
+    var orEl = document.querySelector('.or');
+    if (orEl) orEl.style.display = 'none';
+  }
+
+  function startListening(){
+    window.speechSynthesis && window.speechSynthesis.cancel(); // don't listen while she talks
+    finalText = msgEl.value ? msgEl.value.trim() + ' ' : '';
+    try { recog.start(); } catch(_) {}
+    listening = true;
+    micBtn.classList.add('listening');
+    speakBtn.classList.add('listening');
+    speakLabel.textContent = 'Listening... tap to stop';
+    setNote('Listening — your words will appear as you speak.');
+  }
+  function stopListening(){
+    listening = false;
+    try { recog.stop(); } catch(_) {}
+    micBtn.classList.remove('listening');
+    speakBtn.classList.remove('listening');
+    speakLabel.textContent = 'Tap to speak';
+    setNote('');
+  }
+  function toggleListening(){ listening ? stopListening() : startListening(); }
+  micBtn.addEventListener('click', toggleListening);
+  speakBtn.addEventListener('click', toggleListening);
+
+  function setNote(text, isError){
+    note.textContent = text || '';
+    note.className = 'note' + (isError ? ' error' : '');
+  }
+
+  // ---- Chat rendering ----
+  function addMsg(role, text, extraClass){
+    var div = document.createElement('div');
+    div.className = 'msg ' + role + (extraClass ? ' ' + extraClass : '');
+    if (role === 'luma' && !extraClass){
+      var b = document.createElement('b');
+      b.textContent = 'Coach Luma: ';
+      div.appendChild(b);
+      div.appendChild(document.createTextNode(text));
+    } else {
+      div.textContent = text;
+    }
+    chatlog.appendChild(div);
+    chatlog.scrollTop = chatlog.scrollHeight;
+    return div;
+  }
+
+  function enterChatMode(){
+    if (!document.body.classList.contains('chatting')){
+      document.body.classList.add('chatting');
+      greet.style.display = 'none';
+      submitBtn.textContent = 'Send';
+      msgEl.placeholder = 'Reply to Coach Luma...';
+    }
+  }
+
+  // ---- Send a message to Luma's brain ----
+  submitBtn.addEventListener('click', function(){
+    var message = msgEl.value.trim();
+    if (!message){
+      setNote('Share a sentence or two first — speak or type it.', true);
+      return;
+    }
+    if (listening) stopListening();
+
+    enterChatMode();
+    addMsg('user', message);
+    history.push({ role: 'user', text: message });
+    msgEl.value = '';
+    autosize();
+    setNote('');
+
+    // Lead capture: first message (+ optional email) goes to your inbox
+    if (!leadSent){
+      leadSent = true;
+      var email = emailEl.value.trim();
+      var payload = email
+        ? { message: message, email: email, page: 'robsaiadvisor.com' }
+        : { message: message, page: 'robsaiadvisor.com' };
+      fetch(FORM_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(payload)
+      }).catch(function(){ /* lead logging is best-effort; never block the chat */ });
+      emailRow.style.display = 'none';
+    }
+
+    // Ask the Worker (Gemini) for Luma's reply
+    submitBtn.disabled = true;
+    var thinking = addMsg('luma', 'Luma is thinking...', 'thinking');
+
+    fetch(BRAIN_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: message, history: history.slice(0, -1) })
+    }).then(function(res){
+      if (!res.ok) throw new Error('bad status');
+      return res.json();
+    }).then(function(data){
+      thinking.remove();
+      var reply = (data && data.reply) ? data.reply :
+        "I'm sorry — I had trouble responding. Please try again.";
+      addMsg('luma', reply);
+      history.push({ role: 'luma', text: reply });
+      speak(reply);
+      submitBtn.disabled = false;
+      msgEl.focus();
+    }).catch(function(){
+      thinking.remove();
+      submitBtn.disabled = false;
+      setNote("Luma couldn't respond just now — please try again in a moment.", true);
+    });
+  });
+
+  // ---- Luma speaks (built-in browser voice) ----
+  function speak(text){
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance(text);
+    u.rate = 1;
+    var voices = window.speechSynthesis.getVoices();
+    var v = voices.find(function(x){ return /female|samantha|zira|aria|jenny/i.test(x.name); });
+    if (v) u.voice = v;
+    window.speechSynthesis.speak(u);
+  }
+  // Some browsers load voices late; warm the list.
+  if ('speechSynthesis' in window) { window.speechSynthesis.getVoices(); }
+})();
+</script>
+</body>
+</html>
