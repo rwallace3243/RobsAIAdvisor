@@ -286,6 +286,31 @@
   .eco img{width:100%;height:auto;display:block}
   .eco .hint{margin-top:10px;font-size:12.5px;color:var(--mist)}
 
+
+  /* ---------- Ecosystem hotspots ---------- */
+  .eco .map{position:relative;display:block;border-radius:18px;overflow:hidden;
+    border:1px solid var(--line);
+    box-shadow:0 24px 60px rgba(13,27,46,.14);
+  }
+  .eco .map img{width:100%;height:auto;display:block}
+  .hotspot{
+    position:absolute;border:0;cursor:pointer;
+    background:rgba(47,125,246,0);
+    border-radius:14px;
+    transition:background .15s,box-shadow .15s;
+  }
+  .hotspot:hover,.hotspot:focus-visible{
+    background:rgba(47,125,246,.10);
+    box-shadow:inset 0 0 0 2px rgba(88,199,243,.85), 0 0 22px rgba(47,125,246,.25);
+  }
+  .hotspot span{
+    position:absolute;left:50%;bottom:8px;transform:translateX(-50%) translateY(4px);
+    background:var(--ink);color:#fff;font-size:11.5px;font-weight:600;
+    padding:5px 12px;border-radius:999px;white-space:nowrap;
+    opacity:0;pointer-events:none;transition:opacity .15s,transform .15s;
+  }
+  .hotspot:hover span,.hotspot:focus-visible span{opacity:1;transform:translateX(-50%) translateY(0)}
+
   /* ---------- Footer ---------- */
   footer{
     margin-top:52px;background:var(--ink);color:#c6d3e8;
@@ -414,10 +439,34 @@
 <section class="eco">
   <h2>The S4 Enterprise AI Ecosystem</h2>
   <p>Three core relationship flows, one continuous flywheel — Coach Luma and the Genie™ agent network working across the entire journey.</p>
-  <a class="frame" href="s4-ecosystem.png" target="_blank" title="View full size">
+  <div class="map">
     <img src="s4-ecosystem.png" alt="S4 Enterprise AI Ecosystem — Coach Luma, Genie, S4 Community, Retro For Real, Shadow Shield, and the AGDF framework">
-  </a>
-  <div class="hint">Tap to view full size</div>
+    <button class="hotspot" style="left:17.2%;top:9.8%;width:21.5%;height:15%"
+      data-ask="Who is Coach Luma and how does she guide me through the Synergies4 ecosystem?"
+      aria-label="Ask Luma about Coach Luma"><span>Ask about Coach Luma</span></button>
+    <button class="hotspot" style="left:64.8%;top:9.8%;width:17.5%;height:15%"
+      data-ask="What is Genie, the Synergies4 AI agent network, and what does it do?"
+      aria-label="Ask Luma about Genie"><span>Ask about Genie™</span></button>
+    <button class="hotspot" style="left:1%;top:37.5%;width:15.2%;height:47%"
+      data-ask="How do I get started with the free AI Assessment at Synergies4?"
+      aria-label="Ask Luma about getting started"><span>Ask about getting started</span></button>
+    <button class="hotspot" style="left:19%;top:28.8%;width:19.3%;height:40.5%"
+      data-ask="Tell me about the Synergies4 AI Learning Community — who is it for and what do members get?"
+      aria-label="Ask Luma about the S4 Community"><span>Ask about S4 Community</span></button>
+    <button class="hotspot" style="left:39.8%;top:28.8%;width:20.5%;height:40.5%"
+      data-ask="What is Retro-4-Real and how does pre-meeting AI fact intelligence work?"
+      aria-label="Ask Luma about Retro For Real"><span>Ask about Retro For Real</span></button>
+    <button class="hotspot" style="left:62.6%;top:28.8%;width:20%;height:40.5%"
+      data-ask="What is ShadowShield and how does it handle AI governance and compliance?"
+      aria-label="Ask Luma about Shadow Shield"><span>Ask about ShadowShield™</span></button>
+    <button class="hotspot" style="left:19%;top:70.5%;width:62.2%;height:18.5%"
+      data-ask="Explain the Adaptive Governance Delivery Framework (AGDF) and its four stages."
+      aria-label="Ask Luma about AGDF"><span>Ask about AGDF</span></button>
+    <button class="hotspot" style="left:82.4%;top:66.3%;width:16.6%;height:24%"
+      data-ask="What ecosystem impact and enterprise value does the Synergies4 flywheel create?"
+      aria-label="Ask Luma about ecosystem impact"><span>Ask about the impact</span></button>
+  </div>
+  <div class="hint">Tap any section of the map to ask Luma about it · <a href="s4-ecosystem.png" target="_blank" style="color:inherit">view full size</a></div>
 </section>
 
 <footer>
@@ -464,12 +513,14 @@
     }
   });
 
-  // Product chips: tap to ask Luma
-  document.querySelectorAll('.chip').forEach(function(ch){
+  // Product chips + ecosystem hotspots: tap to ask Luma
+  document.querySelectorAll('.chip, .hotspot').forEach(function(ch){
     ch.addEventListener('click', function(){
+      if (submitBtn.disabled) return; // Luma is thinking — ignore extra taps
       msgEl.value = ch.getAttribute('data-ask');
       autosize();
       submitBtn.click();
+      document.querySelector('.panel').scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
   });
 
