@@ -3,301 +3,374 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Synergies4 AI Consulting — Coach Luma</title>
+<title>Coach Luma — Synergies4 AI Advisor</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<meta name="theme-color" content="#2f7df6">
+<meta name="theme-color" content="#0d1b2e">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Coach Luma">
-<meta name="description" content="Talk with Coach Luma, Synergies4's Digital AI Avatar. Share your goal and we'll guide the right next step.">
+<meta name="description" content="Talk with Coach Luma, Synergies4's Digital AI Advisor. Share your goal — she listens, speaks, and guides your next step in nine languages.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --navy:#1b2a4a;
+    --ink:#0d1b2e;
+    --navy:#16294a;
     --blue:#2f7df6;
-    --blue-dark:#1f63d6;
-    --ink:#3d4a63;
-    --line:#dde6f5;
-    --halo:#e9f1ff;
+    --cyan:#27b3e8;
+    --slate:#46536b;
+    --mist:#8ea0bd;
+    --line:#dfe8f6;
+    --ice:#f3f7fe;
     --bg:#ffffff;
+    --grad:linear-gradient(120deg,#2f7df6 0%,#27b3e8 100%);
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%}
+  html{scroll-behavior:smooth}
   body{
     font-family:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;
-    background:var(--bg);
-    color:var(--navy);
-    display:flex;
-    flex-direction:column;
+    background:
+      radial-gradient(1100px 500px at 85% -10%, #eaf3ff 0%, transparent 60%),
+      radial-gradient(900px 480px at -10% 30%, #f2f9ff 0%, transparent 55%),
+      var(--bg);
+    color:var(--ink);
     min-height:100vh;
+    display:flex;flex-direction:column;
   }
-  header{padding:22px 30px;display:flex;align-items:center;justify-content:space-between}
-  header img{height:74px;width:auto;display:block}
-  .langrow{display:flex;align-items:center;gap:8px;color:var(--ink);font-size:13.5px}
+
+  /* ---------- Header ---------- */
+  .top{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:blur(14px);
+    background:rgba(255,255,255,.78);
+    border-bottom:1px solid rgba(223,232,246,.8);
+  }
+  .top-in{
+    max-width:1120px;margin:0 auto;
+    padding:14px 28px;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+  }
+  .brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+  .brand img{height:46px;width:auto;display:block}
+  .brand-name{
+    font-family:'Sora',sans-serif;font-weight:700;font-size:17px;color:var(--ink);
+    letter-spacing:-.01em;
+  }
+  .brand-name span{color:var(--blue)}
+  .top-right{display:flex;align-items:center;gap:14px}
+  .langrow{display:flex;align-items:center;gap:8px;color:var(--slate);font-size:13px}
   .langrow select{
-    font:inherit;font-size:14px;color:var(--navy);
+    font:inherit;font-size:13.5px;font-weight:600;color:var(--ink);
     border:1px solid var(--line);border-radius:999px;
     padding:8px 14px;outline:0;background:#fff;cursor:pointer;
+    transition:border-color .15s;
   }
-  .langrow select:focus{border-color:var(--blue)}
+  .langrow select:hover,.langrow select:focus{border-color:var(--blue)}
+  .team-link{
+    font-size:13.5px;font-weight:700;color:#fff;text-decoration:none;
+    background:var(--grad);
+    padding:9px 18px;border-radius:999px;
+    box-shadow:0 6px 18px rgba(47,125,246,.30);
+    transition:transform .12s,box-shadow .15s;
+    white-space:nowrap;
+  }
+  .team-link:hover{transform:translateY(-1px);box-shadow:0 9px 22px rgba(47,125,246,.38)}
 
+  /* ---------- Hero ---------- */
   .stage{
     flex:1;
-    display:flex;
-    align-items:flex-end;
-    justify-content:center;
-    gap:40px;
-    max-width:1060px;
-    width:100%;
-    margin:0 auto;
-    padding:0 30px;
+    display:flex;align-items:flex-end;justify-content:center;gap:56px;
+    max-width:1120px;width:100%;margin:0 auto;
+    padding:34px 28px 0;
   }
 
   .luma-wrap{
-    position:relative;
-    flex:0 0 300px;
-    display:flex;
-    align-items:flex-end;
-    justify-content:center;
+    position:relative;flex:0 0 320px;
+    display:flex;align-items:flex-end;justify-content:center;
+    animation:rise .7s ease-out both;
   }
-  .rings{
-    position:absolute;
-    bottom:40px;left:50%;
-    width:520px;height:520px;
-    transform:translateX(-50%);
-    border-radius:50%;
-    background:
-      radial-gradient(circle, transparent 30%, var(--halo) 31%, transparent 33%,
-      transparent 45%, var(--halo) 46%, transparent 48%,
-      transparent 60%, var(--halo) 61%, transparent 63%);
-    z-index:0;
-    pointer-events:none;
+  /* Signature: the breathing aura */
+  .aura{
+    position:absolute;bottom:30px;left:50%;
+    width:560px;height:560px;transform:translateX(-50%);
+    border-radius:50%;pointer-events:none;z-index:0;
+    background:conic-gradient(from 0deg, rgba(47,125,246,.14), rgba(39,179,232,.05), rgba(47,125,246,.14));
+    -webkit-mask:radial-gradient(circle, transparent 54%, #000 55%, #000 57%, transparent 58%,
+      transparent 68%, #000 69%, #000 70.5%, transparent 71.5%,
+      transparent 82%, #000 83%, #000 84%, transparent 85%);
+            mask:radial-gradient(circle, transparent 54%, #000 55%, #000 57%, transparent 58%,
+      transparent 68%, #000 69%, #000 70.5%, transparent 71.5%,
+      transparent 82%, #000 83%, #000 84%, transparent 85%);
+    animation:spin 26s linear infinite, breathe 6s ease-in-out infinite;
   }
+  @keyframes spin{to{transform:translateX(-50%) rotate(360deg)}}
+  @keyframes breathe{0%,100%{opacity:.85}50%{opacity:1}}
   .luma-wrap img{
     position:relative;z-index:1;
-    width:100%;max-width:300px;display:block;
+    width:100%;max-width:320px;display:block;
+    filter:drop-shadow(0 24px 40px rgba(13,27,46,.16));
   }
   .greet{
-    position:absolute;z-index:2;
-    top:-14px;left:-30px;
-    max-width:230px;
-    background:#fff;
+    position:absolute;z-index:2;top:-8px;left:-34px;max-width:236px;
+    background:rgba(255,255,255,.92);backdrop-filter:blur(6px);
     border:1px solid var(--line);
     border-radius:16px 16px 16px 4px;
-    box-shadow:0 10px 30px rgba(27,42,74,.10);
-    padding:14px 16px;
-    font-size:14.5px;line-height:1.45;color:var(--ink);
+    box-shadow:0 12px 32px rgba(13,27,46,.10);
+    padding:14px 16px;font-size:14px;line-height:1.5;color:var(--slate);
   }
   .greet strong{color:var(--blue)}
 
   .panel{
-    flex:1;
-    max-width:560px;
-    padding:30px 0 70px;
-    text-align:center;
-    display:flex;
-    flex-direction:column;
-    justify-content:flex-end;
+    flex:1;max-width:600px;
+    padding:14px 0 46px;text-align:center;
+    display:flex;flex-direction:column;justify-content:flex-end;
+    animation:rise .7s .08s ease-out both;
   }
-  h1{
-    font-size:clamp(40px,6vw,64px);
-    font-weight:800;
-    letter-spacing:-.02em;
-    line-height:1.05;
-  }
-  h1 .you{color:var(--blue)}
-  .sub{
-    margin:18px auto 30px;
-    max-width:420px;
-    color:var(--ink);
-    font-size:16.5px;line-height:1.55;
-  }
-  body.chatting h1{font-size:clamp(26px,3.5vw,34px)}
-  body.chatting .sub{display:none}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 
+  .kicker{
+    display:inline-flex;align-items:center;gap:8px;margin:0 auto 16px;
+    font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--blue);
+    background:#eaf2ff;border:1px solid #d6e6ff;border-radius:999px;
+    padding:7px 16px;
+  }
+  .kicker::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--grad);
+    box-shadow:0 0 0 3px rgba(47,125,246,.15)}
+  h1{
+    font-family:'Sora',sans-serif;
+    font-size:clamp(42px,5.6vw,68px);
+    font-weight:800;letter-spacing:-.035em;line-height:1.02;
+    color:var(--ink);
+  }
+  h1 .you{
+    background:var(--grad);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .sub{
+    margin:18px auto 28px;max-width:440px;
+    color:var(--slate);font-size:16.5px;line-height:1.6;
+  }
+  body.chatting h1{font-size:clamp(26px,3.4vw,34px)}
+  body.chatting .sub,body.chatting .kicker{display:none}
+
+  /* ---------- Chat ---------- */
   .chatlog{
-    display:none;
-    text-align:left;
-    margin:14px 0 16px;
-    max-height:46vh;
-    overflow-y:auto;
-    padding:4px 6px 4px 2px;
-    scroll-behavior:smooth;
+    display:none;text-align:left;margin:12px 0 16px;
+    max-height:46vh;overflow-y:auto;
+    padding:4px 6px 4px 2px;scroll-behavior:smooth;
   }
   body.chatting .chatlog{display:block}
   .msg{
-    max-width:85%;
-    margin:8px 0;
-    padding:12px 16px;
-    border-radius:16px;
-    font-size:15.5px;line-height:1.5;
-    animation:pop .18s ease-out;
+    max-width:85%;margin:8px 0;padding:12px 16px;border-radius:16px;
+    font-size:15.5px;line-height:1.55;animation:pop .18s ease-out;
   }
   @keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
   .msg.user{
-    margin-left:auto;
-    background:var(--blue);
-    color:#fff;
+    margin-left:auto;color:#fff;background:var(--grad);
     border-bottom-right-radius:4px;
+    box-shadow:0 6px 16px rgba(47,125,246,.22);
   }
   .msg.luma{
-    margin-right:auto;
-    background:#f4f8ff;
-    border:1px solid var(--line);
-    color:var(--ink);
+    margin-right:auto;background:#fff;
+    border:1px solid var(--line);color:var(--slate);
     border-bottom-left-radius:4px;
+    box-shadow:0 6px 18px rgba(13,27,46,.06);
   }
   .msg.luma b{color:var(--blue);font-weight:700}
-  .msg.thinking{
-    color:#9aa8c2;font-style:italic;
-    background:#f8faff;border:1px dashed var(--line);
-  }
+  .msg.thinking{color:var(--mist);font-style:italic;background:var(--ice);border:1px dashed var(--line);box-shadow:none}
 
   .inputrow{
     display:flex;align-items:flex-end;gap:10px;
-    background:#fff;
-    border:1px solid var(--line);
-    border-radius:26px;
-    box-shadow:0 14px 34px rgba(27,42,74,.10);
-    padding:8px 8px 8px 20px;
+    background:rgba(255,255,255,.95);
+    border:1px solid var(--line);border-radius:28px;
+    box-shadow:0 18px 44px rgba(13,27,46,.12);
+    padding:9px 9px 9px 22px;
+    transition:box-shadow .2s,border-color .2s;
   }
+  .inputrow:focus-within{border-color:#bcd6ff;box-shadow:0 18px 48px rgba(47,125,246,.18)}
   textarea{
-    flex:1;border:0;outline:0;resize:none;
-    font:inherit;font-size:16px;color:var(--navy);
-    line-height:1.45;
-    min-height:32px;max-height:180px;
-    padding:9px 0;
-    background:transparent;
+    flex:1;border:0;outline:0;resize:none;font:inherit;font-size:16px;color:var(--ink);
+    line-height:1.45;min-height:32px;max-height:180px;padding:9px 0;background:transparent;
   }
-  textarea::placeholder{color:#9aa8c2}
+  textarea::placeholder{color:var(--mist)}
   .mic{
-    flex:0 0 46px;height:46px;width:46px;
-    border:0;border-radius:50%;
-    background:var(--blue);
-    color:#fff;cursor:pointer;
+    flex:0 0 48px;height:48px;width:48px;border:0;border-radius:50%;
+    background:var(--grad);color:#fff;cursor:pointer;
     display:flex;align-items:center;justify-content:center;
-    transition:background .15s;
+    box-shadow:0 8px 18px rgba(47,125,246,.32);
+    transition:transform .12s,filter .15s;
   }
-  .mic:hover{background:var(--blue-dark)}
+  .mic:hover{transform:scale(1.05)}
   .mic svg{width:21px;height:21px}
-  .mic.listening{background:#e14a4a;animation:pulse 1.4s infinite}
+  .mic.listening{background:linear-gradient(120deg,#e14a4a,#f2695c);animation:pulse 1.4s infinite}
   @keyframes pulse{
     0%{box-shadow:0 0 0 0 rgba(225,74,74,.45)}
     70%{box-shadow:0 0 0 16px rgba(225,74,74,0)}
     100%{box-shadow:0 0 0 0 rgba(225,74,74,0)}
   }
-  @media (prefers-reduced-motion:reduce){.mic.listening{animation:none}}
 
-  .or{margin:16px 0 12px;color:#9aa8c2;font-size:13px;font-weight:600;letter-spacing:.08em}
+  .or{margin:16px 0 12px;color:var(--mist);font-size:12px;font-weight:700;letter-spacing:.14em}
   body.chatting .or{display:none}
-
   .speakbtn{
     display:inline-flex;align-items:center;gap:9px;
-    border:1px solid var(--line);
-    background:#fff;color:var(--blue);
-    font:inherit;font-weight:600;font-size:15px;
-    padding:12px 22px;border-radius:999px;
-    box-shadow:0 8px 22px rgba(27,42,74,.08);
-    cursor:pointer;transition:border-color .15s;
+    border:1px solid var(--line);background:#fff;color:var(--blue);
+    font:inherit;font-weight:700;font-size:15px;
+    padding:12px 24px;border-radius:999px;
+    box-shadow:0 8px 22px rgba(13,27,46,.07);
+    cursor:pointer;transition:border-color .15s,transform .12s;
   }
-  .speakbtn:hover{border-color:var(--blue)}
+  .speakbtn:hover{border-color:var(--blue);transform:translateY(-1px)}
   .speakbtn.listening{color:#e14a4a;border-color:#e14a4a}
   body.chatting .speakbtn{display:none}
 
-  .emailrow{margin-top:22px}
+  .emailrow{margin-top:20px}
   .emailrow input{
-    width:100%;max-width:360px;
-    font:inherit;font-size:15px;color:var(--navy);
+    width:100%;max-width:380px;font:inherit;font-size:15px;color:var(--ink);
     border:1px solid var(--line);border-radius:999px;
-    padding:11px 20px;outline:0;
+    padding:12px 22px;outline:0;background:rgba(255,255,255,.9);
+    transition:border-color .15s;
   }
   .emailrow input:focus{border-color:var(--blue)}
-  .emailrow input::placeholder{color:#9aa8c2}
+  .emailrow input::placeholder{color:var(--mist)}
 
   .submit{
-    margin-top:20px;
-    border:0;border-radius:999px;
-    background:var(--blue);color:#fff;
-    font:inherit;font-weight:700;font-size:16px;
-    padding:14px 46px;cursor:pointer;
-    box-shadow:0 12px 26px rgba(47,125,246,.35);
-    transition:background .15s,transform .1s;
+    margin-top:20px;border:0;border-radius:999px;
+    background:var(--grad);color:#fff;
+    font:inherit;font-weight:700;font-size:16px;letter-spacing:.01em;
+    padding:15px 52px;cursor:pointer;
+    box-shadow:0 14px 30px rgba(47,125,246,.35);
+    transition:transform .12s,box-shadow .15s;
   }
-  .submit:hover{background:var(--blue-dark)}
+  .submit:hover{transform:translateY(-1px);box-shadow:0 18px 34px rgba(47,125,246,.42)}
   .submit:active{transform:translateY(1px)}
-  .submit:disabled{opacity:.55;cursor:default}
-  body.chatting .submit{margin-top:12px;padding:12px 36px}
+  .submit:disabled{opacity:.55;cursor:default;transform:none}
+  body.chatting .submit{margin-top:12px;padding:12px 38px}
 
-  .note{margin-top:14px;font-size:13px;color:#9aa8c2;min-height:18px}
+  .note{margin-top:14px;font-size:13px;color:var(--mist);min-height:18px}
   .note.error{color:#c43d3d}
 
-  button:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-visible{
+  /* ---------- Product strip (tap to ask Luma) ---------- */
+  .strip{
+    max-width:1120px;margin:6px auto 0;padding:0 28px 8px;width:100%;
+    display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;
+    animation:rise .7s .16s ease-out both;
+  }
+  .strip-label{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mist);margin-right:4px}
+  .chip{
+    font:inherit;font-size:13.5px;font-weight:600;color:var(--navy);
+    background:#fff;border:1px solid var(--line);border-radius:999px;
+    padding:9px 18px;cursor:pointer;
+    transition:border-color .15s,color .15s,transform .12s,box-shadow .15s;
+  }
+  .chip:hover{border-color:var(--blue);color:var(--blue);transform:translateY(-1px);box-shadow:0 6px 16px rgba(47,125,246,.14)}
+
+  /* ---------- Ecosystem section ---------- */
+  .eco{
+    max-width:1120px;margin:38px auto 0;padding:0 28px 8px;width:100%;
+    text-align:center;
+  }
+  .eco h2{
+    font-family:'Sora',sans-serif;font-size:clamp(22px,2.6vw,30px);
+    font-weight:700;letter-spacing:-.02em;color:var(--ink);
+  }
+  .eco p{margin:10px auto 22px;max-width:560px;color:var(--slate);font-size:15.5px;line-height:1.6}
+  .eco a.frame{display:block;border-radius:18px;overflow:hidden;
+    border:1px solid var(--line);
+    box-shadow:0 24px 60px rgba(13,27,46,.14);
+    transition:transform .18s,box-shadow .2s;
+  }
+  .eco a.frame:hover{transform:translateY(-3px);box-shadow:0 30px 70px rgba(13,27,46,.18)}
+  .eco img{width:100%;height:auto;display:block}
+  .eco .hint{margin-top:10px;font-size:12.5px;color:var(--mist)}
+
+  /* ---------- Footer ---------- */
+  footer{
+    margin-top:52px;background:var(--ink);color:#c6d3e8;
+  }
+  .foot-in{
+    max-width:1120px;margin:0 auto;padding:34px 28px;
+    display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;
+  }
+  .foot-brand{font-family:'Sora',sans-serif;font-weight:700;font-size:16px;color:#fff}
+  .foot-brand span{color:var(--cyan)}
+  .foot-links{display:flex;gap:22px;font-size:13.5px}
+  .foot-links a{color:#c6d3e8;text-decoration:none;transition:color .15s}
+  .foot-links a:hover{color:#fff}
+  .foot-copy{font-size:12.5px;color:#7f90ac;width:100%;text-align:center;margin-top:8px}
+
+  button:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{
     outline:3px solid rgba(47,125,246,.45);outline-offset:2px;
   }
-
-  footer{
-    text-align:center;color:#9aa8c2;font-size:12.5px;
-    padding:14px 20px 20px;
+  @media (prefers-reduced-motion:reduce){
+    .aura{animation:none}
+    .luma-wrap,.panel,.strip{animation:none}
+    .mic.listening{animation:none}
   }
 
-  @media (max-width:760px){
-    .stage{flex-direction:column-reverse;align-items:center;gap:6px}
-    .panel{padding:8px 0 26px}
-    .luma-wrap{flex:0 0 auto;width:210px}
-    .rings{width:360px;height:360px;bottom:20px}
-    .greet{left:-46px;top:-6px;max-width:190px;font-size:13.5px}
-    header{padding:16px 20px}
-    header img{height:56px}
-    .langrow span{display:none}
-    body.chatting .luma-wrap{width:130px}
+  /* ---------- Mobile ---------- */
+  @media (max-width:780px){
+    .top-in{padding:12px 18px}
+    .brand img{height:38px}
+    .brand-name{display:none}
+    .team-link{display:none}
+    .stage{flex-direction:column-reverse;align-items:center;gap:4px;padding:22px 20px 0}
+    .panel{padding:4px 0 26px}
+    .luma-wrap{flex:0 0 auto;width:220px}
+    .aura{width:380px;height:380px;bottom:16px}
+    .greet{left:-42px;top:-4px;max-width:196px;font-size:13px}
+    .strip{gap:8px}
+    .strip-label{width:100%;margin:0 0 2px}
+    body.chatting .luma-wrap{width:132px}
     body.chatting .greet{display:none}
     .chatlog{max-height:40vh}
+    .foot-in{justify-content:center;text-align:center}
   }
 </style>
 </head>
 <body>
 
-<header>
-  <img src="logo.png" alt="Synergies4 AI Consulting">
-  <div class="langrow">
-    <span>Language</span>
-    <select id="langSel" aria-label="Conversation language">
-      <option value="auto" selected>Auto-detect</option>
-      <option value="en-US">English</option>
-      <option value="es-US">Español</option>
-      <option value="fr-FR">Français</option>
-      <option value="de-DE">Deutsch</option>
-      <option value="pt-BR">Português</option>
-      <option value="it-IT">Italiano</option>
-      <option value="hi-IN">हिन्दी</option>
-      <option value="ja-JP">日本語</option>
-      <option value="ko-KR">한국어</option>
-    </select>
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="https://coachluma.ai">
+      <img src="logo.png" alt="Synergies4 AI Consulting">
+      <span class="brand-name">Coach<span>Luma</span></span>
+    </a>
+    <div class="top-right">
+      <div class="langrow">
+        <select id="langSel" aria-label="Conversation language">
+          <option value="auto" selected>Auto-detect</option>
+          <option value="en-US">English</option>
+          <option value="es-US">Español</option>
+          <option value="fr-FR">Français</option>
+          <option value="de-DE">Deutsch</option>
+          <option value="pt-BR">Português</option>
+          <option value="it-IT">Italiano</option>
+          <option value="hi-IN">हिन्दी</option>
+          <option value="ja-JP">日本語</option>
+          <option value="ko-KR">한국어</option>
+        </select>
+      </div>
+      <a class="team-link" href="https://synergies4.com" target="_blank" rel="noopener">Meet the team</a>
+    </div>
   </div>
 </header>
 
-<section style="max-width:1060px;margin:0 auto;padding:4px 30px 10px;">
-  <a href="s4-ecosystem.png" target="_blank" title="Click to view full size">
-    <img src="s4-ecosystem.png" alt="S4 Enterprise AI Ecosystem — Coach Luma, Genie, S4 Community, Retro For Real, Shadow Shield, and the AGDF framework"
-         style="width:100%;height:auto;display:block;border-radius:16px;border:1px solid #dde6f5;box-shadow:0 14px 34px rgba(27,42,74,.10);">
-  </a>
-</section> 
-
 <main class="stage">
   <div class="luma-wrap">
-    <div class="rings" aria-hidden="true"></div>
+    <div class="aura" aria-hidden="true"></div>
     <div class="greet" id="greet">
-      Hi, I'm <strong>Coach Luma</strong>, Synergies4's Digital AI Avatar. What's on your mind today?
+      Hi, I'm <strong>Coach Luma</strong>, Synergies4's Digital AI Advisor. What's on your mind today?
     </div>
-    <img src="luma.png" alt="Coach Luma, Synergies4's digital AI avatar">
+    <img src="luma.png" alt="Coach Luma, Synergies4's digital AI advisor">
   </div>
 
   <div class="panel">
+    <span class="kicker">Synergies4 AI Advisor · 9 languages</span>
     <h1>Why are <span class="you">you</span> here?</h1>
-    <p class="sub">Let's start a conversation. Share your goal and I'll guide the right next step.</p>
+    <p class="sub">Let's start a conversation. Share your goal — Luma listens, speaks, and guides your next step.</p>
 
     <div class="chatlog" id="chatlog" aria-live="polite"></div>
 
@@ -330,7 +403,33 @@
   </div>
 </main>
 
-<footer>© 2026 Synergies4 AI Consulting · robsaiadvisor.com</footer>
+<div class="strip" aria-label="Ask Luma about Synergies4 solutions">
+  <span class="strip-label">Ask Luma about</span>
+  <button class="chip" data-ask="What is ShadowShield and how does it protect our data when using AI?">ShadowShield™</button>
+  <button class="chip" data-ask="Tell me about the Synergies4 AI Learning Community and its membership levels.">AI Learning Community</button>
+  <button class="chip" data-ask="How does the Workforce Intelligence Engine assess and grow AI capability?">Workforce Intelligence Engine™</button>
+  <button class="chip" data-ask="What is Retro-4-Real and how does it improve team retrospectives?">Retro-4-Real™</button>
+</div>
+
+<section class="eco">
+  <h2>The S4 Enterprise AI Ecosystem</h2>
+  <p>Three core relationship flows, one continuous flywheel — Coach Luma and the Genie™ agent network working across the entire journey.</p>
+  <a class="frame" href="s4-ecosystem.png" target="_blank" title="View full size">
+    <img src="s4-ecosystem.png" alt="S4 Enterprise AI Ecosystem — Coach Luma, Genie, S4 Community, Retro For Real, Shadow Shield, and the AGDF framework">
+  </a>
+  <div class="hint">Tap to view full size</div>
+</section>
+
+<footer>
+  <div class="foot-in">
+    <div class="foot-brand">Coach<span>Luma</span> · Synergies4 AI Consulting</div>
+    <nav class="foot-links">
+      <a href="https://synergies4.com" target="_blank" rel="noopener">synergies4.com</a>
+      <a href="https://coachluma.ai">coachluma.ai</a>
+    </nav>
+    <div class="foot-copy">© 2026 Synergies4 AI Consulting. All rights reserved.</div>
+  </div>
+</footer>
 
 <script>
 (function(){
@@ -351,7 +450,7 @@
 
   var history = [];
   var leadSent = false;
-  var lumaAudio = null; // the currently playing voice clip
+  var lumaAudio = null;
 
   function autosize(){
     msgEl.style.height = 'auto';
@@ -365,7 +464,16 @@
     }
   });
 
-  // ---- Speech to text (live transcript) ----
+  // Product chips: tap to ask Luma
+  document.querySelectorAll('.chip').forEach(function(ch){
+    ch.addEventListener('click', function(){
+      msgEl.value = ch.getAttribute('data-ask');
+      autosize();
+      submitBtn.click();
+    });
+  });
+
+  // ---- Speech to text ----
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   var recog = null;
   var listening = false;
@@ -493,8 +601,8 @@
       leadSent = true;
       var email = emailEl.value.trim();
       var payload = email
-        ? { message: message, email: email, page: 'robsaiadvisor.com' }
-        : { message: message, page: 'robsaiadvisor.com' };
+        ? { message: message, email: email, page: 'coachluma.ai' }
+        : { message: message, page: 'coachluma.ai' };
       fetch(FORM_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
@@ -533,7 +641,7 @@
     });
   });
 
-  // ---- Luma speaks: real voice from the Worker, browser voice as fallback ----
+  // ---- Luma speaks ----
   function speakReply(data){
     stopLumaVoice();
     if (data && data.audio){
@@ -555,10 +663,9 @@
     window.speechSynthesis.speak(u);
   }
   if ('speechSynthesis' in window) { window.speechSynthesis.getVoices(); }
+
+  if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
 })();
-</script>
-<script>
-if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
 </script>
 </body>
 </html>
