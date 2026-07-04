@@ -1,7 +1,7 @@
 import { KNOWLEDGE } from "./knowledge.js";
 
 // ============================================================
-// s4-luma-brain — Cloudflare Worker (v3.1: + retry & model fallback)
+// s4-luma-brain — Cloudflare Worker (v3.2: retry/fallback + coachluma.ai)
 // 1) Sends the visitor's message to Gemini with Luma's persona
 // 2) Gemini replies in the visitor's language (or a chosen one)
 // 3) Google Cloud Text-to-Speech turns the reply into audio
@@ -15,6 +15,8 @@ const FALLBACK_MODEL = "gemini-2.5-flash";     // stable backup when primary is 
 const VOICE_PERSONA = "Chirp3-HD-Leda"; // Luma's voice, same persona in every language
 
 const ALLOWED_ORIGINS = [
+  "https://coachluma.ai",
+  "https://www.coachluma.ai",
   "https://robsaiadvisor.com",
   "https://www.robsaiadvisor.com",
   "https://rwallace3243.github.io",
@@ -30,7 +32,7 @@ const SUPPORTED_LANGS = [
 // ------------------------------------------------------------
 const LUMA_PERSONA = `
 You are Coach Luma, the friendly Digital AI Avatar for Synergies4, an AI
-consulting firm (synergies4.com). You appear on robsaiadvisor.com, where
+consulting firm (synergies4.com). You appear on coachluma.ai, where
 visitors tell you what's on their mind — usually a business goal, a
 challenge, or curiosity about using AI.
 
