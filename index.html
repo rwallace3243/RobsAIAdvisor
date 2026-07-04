@@ -28,8 +28,15 @@
     flex-direction:column;
     min-height:100vh;
   }
-  header{padding:22px 30px}
+  header{padding:22px 30px;display:flex;align-items:center;justify-content:space-between}
   header img{height:74px;width:auto;display:block}
+  .langrow{display:flex;align-items:center;gap:8px;color:var(--ink);font-size:13.5px}
+  .langrow select{
+    font:inherit;font-size:14px;color:var(--navy);
+    border:1px solid var(--line);border-radius:999px;
+    padding:8px 14px;outline:0;background:#fff;cursor:pointer;
+  }
+  .langrow select:focus{border-color:var(--blue)}
 
   .stage{
     flex:1;
@@ -43,7 +50,6 @@
     padding:0 30px;
   }
 
-  /* Luma + ripple halo */
   .luma-wrap{
     position:relative;
     flex:0 0 300px;
@@ -81,7 +87,6 @@
   }
   .greet strong{color:var(--blue)}
 
-  /* Right column */
   .panel{
     flex:1;
     max-width:560px;
@@ -107,7 +112,6 @@
   body.chatting h1{font-size:clamp(26px,3.5vw,34px)}
   body.chatting .sub{display:none}
 
-  /* Chat log */
   .chatlog{
     display:none;
     text-align:left;
@@ -224,7 +228,7 @@
   .note{margin-top:14px;font-size:13px;color:#9aa8c2;min-height:18px}
   .note.error{color:#c43d3d}
 
-  button:focus-visible,textarea:focus-visible,input:focus-visible{
+  button:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-visible{
     outline:3px solid rgba(47,125,246,.45);outline-offset:2px;
   }
 
@@ -241,6 +245,7 @@
     .greet{left:-46px;top:-6px;max-width:190px;font-size:13.5px}
     header{padding:16px 20px}
     header img{height:56px}
+    .langrow span{display:none}
     body.chatting .luma-wrap{width:130px}
     body.chatting .greet{display:none}
     .chatlog{max-height:40vh}
@@ -250,7 +255,22 @@
 <body>
 
 <header>
-  <img src="Logo.png" alt="Synergies4 AI Consulting">
+  <img src="logo.png" alt="Synergies4 AI Consulting">
+  <div class="langrow">
+    <span>Language</span>
+    <select id="langSel" aria-label="Conversation language">
+      <option value="auto" selected>Auto-detect</option>
+      <option value="en-US">English</option>
+      <option value="es-US">Español</option>
+      <option value="fr-FR">Français</option>
+      <option value="de-DE">Deutsch</option>
+      <option value="pt-BR">Português</option>
+      <option value="it-IT">Italiano</option>
+      <option value="hi-IN">हिन्दी</option>
+      <option value="ja-JP">日本語</option>
+      <option value="ko-KR">한국어</option>
+    </select>
+  </div>
 </header>
 
 <main class="stage">
@@ -259,7 +279,7 @@
     <div class="greet" id="greet">
       Hi, I'm <strong>Coach Luma</strong>, Synergies4's Digital AI Avatar. What's on your mind today?
     </div>
-    <img src="Luma.png" alt="Coach Luma, Synergies4's digital AI avatar">
+    <img src="luma.png" alt="Coach Luma, Synergies4's digital AI avatar">
   </div>
 
   <div class="panel">
@@ -301,9 +321,8 @@
 
 <script>
 (function(){
-  // Your two backend endpoints:
-  var BRAIN_ENDPOINT = "https://s4-luma-brain.s4ai.workers.dev";   // Cloudflare Worker (Gemini)
-  var FORM_ENDPOINT  = "https://formspree.io/f/xykqlkbo";          // Formspree (lead capture)
+  var BRAIN_ENDPOINT = "https://s4-luma-brain.s4ai.workers.dev";
+  var FORM_ENDPOINT  = "https://formspree.io/f/xykqlkbo";
 
   var msgEl = document.getElementById('message');
   var emailEl = document.getElementById('email');
@@ -315,17 +334,17 @@
   var note = document.getElementById('note');
   var chatlog = document.getElementById('chatlog');
   var greet = document.getElementById('greet');
+  var langSel = document.getElementById('langSel');
 
-  var history = [];       // [{role:'user'|'luma', text}]
-  var leadSent = false;   // Formspree fires once, on the first message
+  var history = [];
+  var leadSent = false;
+  var lumaAudio = null; // the currently playing voice clip
 
   function autosize(){
     msgEl.style.height = 'auto';
     msgEl.style.height = Math.min(msgEl.scrollHeight, 180) + 'px';
   }
   msgEl.addEventListener('input', autosize);
-
-  // Enter sends (Shift+Enter = newline)
   msgEl.addEventListener('keydown', function(e){
     if (e.key === 'Enter' && !e.shiftKey){
       e.preventDefault();
@@ -339,9 +358,13 @@
   var listening = false;
   var finalText = '';
 
+  function recogLang(){
+    return langSel.value === 'auto' ? 'en-US' : langSel.value;
+  }
+
   if (SR) {
     recog = new SR();
-    recog.lang = 'en-US';
+    recog.lang = recogLang();
     recog.continuous = true;
     recog.interimResults = true;
 
@@ -371,8 +394,20 @@
     if (orEl) orEl.style.display = 'none';
   }
 
+  langSel.addEventListener('change', function(){
+    if (recog){
+      if (listening) stopListening();
+      recog.lang = recogLang();
+    }
+  });
+
+  function stopLumaVoice(){
+    if (lumaAudio){ lumaAudio.pause(); lumaAudio = null; }
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  }
+
   function startListening(){
-    window.speechSynthesis && window.speechSynthesis.cancel(); // don't listen while she talks
+    stopLumaVoice();
     finalText = msgEl.value ? msgEl.value.trim() + ' ' : '';
     try { recog.start(); } catch(_) {}
     listening = true;
@@ -424,7 +459,7 @@
     }
   }
 
-  // ---- Send a message to Luma's brain ----
+  // ---- Send a message ----
   submitBtn.addEventListener('click', function(){
     var message = msgEl.value.trim();
     if (!message){
@@ -432,6 +467,7 @@
       return;
     }
     if (listening) stopListening();
+    stopLumaVoice();
 
     enterChatMode();
     addMsg('user', message);
@@ -440,7 +476,6 @@
     autosize();
     setNote('');
 
-    // Lead capture: first message (+ optional email) goes to your inbox
     if (!leadSent){
       leadSent = true;
       var email = emailEl.value.trim();
@@ -451,18 +486,21 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify(payload)
-      }).catch(function(){ /* lead logging is best-effort; never block the chat */ });
+      }).catch(function(){});
       emailRow.style.display = 'none';
     }
 
-    // Ask the Worker (Gemini) for Luma's reply
     submitBtn.disabled = true;
     var thinking = addMsg('luma', 'Luma is thinking...', 'thinking');
 
     fetch(BRAIN_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: message, history: history.slice(0, -1) })
+      body: JSON.stringify({
+        message: message,
+        history: history.slice(0, -1),
+        lang: langSel.value
+      })
     }).then(function(res){
       if (!res.ok) throw new Error('bad status');
       return res.json();
@@ -472,7 +510,7 @@
         "I'm sorry — I had trouble responding. Please try again.";
       addMsg('luma', reply);
       history.push({ role: 'luma', text: reply });
-      speak(reply);
+      speakReply(data);
       submitBtn.disabled = false;
       msgEl.focus();
     }).catch(function(){
@@ -482,18 +520,27 @@
     });
   });
 
-  // ---- Luma speaks (built-in browser voice) ----
-  function speak(text){
+  // ---- Luma speaks: real voice from the Worker, browser voice as fallback ----
+  function speakReply(data){
+    stopLumaVoice();
+    if (data && data.audio){
+      try {
+        lumaAudio = new Audio('data:audio/mp3;base64,' + data.audio);
+        lumaAudio.play().catch(function(){ browserSpeak(data.reply, data.lang); });
+        return;
+      } catch(_) { /* fall through */ }
+    }
+    if (data && data.reply) browserSpeak(data.reply, data.lang);
+  }
+
+  function browserSpeak(text, lang){
     if (!('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
     var u = new SpeechSynthesisUtterance(text);
     u.rate = 1;
-    var voices = window.speechSynthesis.getVoices();
-    var v = voices.find(function(x){ return /female|samantha|zira|aria|jenny/i.test(x.name); });
-    if (v) u.voice = v;
+    if (lang) u.lang = lang;
     window.speechSynthesis.speak(u);
   }
-  // Some browsers load voices late; warm the list.
   if ('speechSynthesis' in window) { window.speechSynthesis.getVoices(); }
 })();
 </script>
