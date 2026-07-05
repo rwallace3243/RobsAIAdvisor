@@ -394,7 +394,7 @@
     <div class="greet" id="greet">
       Hi, I'm <strong>Coach Luma</strong>, Synergies4's Digital AI Advisor. What's on your mind today?
     </div>
-    <img src="luma.png" alt="Coach Luma, Synergies4's digital AI advisor">
+    <img id="lumaImg" src="luma-welcome.png" alt="Coach Luma, Synergies4's digital AI advisor, welcoming you">
   </div>
 
   <div class="panel">
@@ -706,6 +706,8 @@
   function enterChatMode(){
     if (!document.body.classList.contains('chatting')){
       document.body.classList.add('chatting');
+      var lumaImg = document.getElementById('lumaImg');
+      if (lumaImg) lumaImg.src = 'luma.png';
       greet.style.display = 'none';
       submitBtn.textContent = 'Send';
       msgEl.placeholder = 'Reply to Coach Luma...';
