@@ -163,6 +163,7 @@
     padding:4px 6px 4px 2px;scroll-behavior:smooth;
   }
   body.chatting .chatlog{display:block}
+  body.welcomed .chatlog{display:block}
   .msg{
     max-width:85%;margin:8px 0;padding:12px 16px;border-radius:16px;
     font-size:15.5px;line-height:1.55;animation:pop .18s ease-out;
@@ -505,6 +506,19 @@
   var history = [];
   var leadSent = false;
   var lumaAudio = null;
+
+  // ---- Instant welcome greeting on page load ----
+  function showWelcome(){
+    document.body.classList.add('welcomed');
+    var div = document.createElement('div');
+    div.className = 'msg luma';
+    var b = document.createElement('b');
+    b.textContent = 'Coach Luma: ';
+    div.appendChild(b);
+    div.appendChild(document.createTextNode("Welcome to Synergies4 \u2014 I'm Coach Luma. What's your goal?"));
+    chatlog.appendChild(div);
+  }
+  showWelcome();
 
   function autosize(){
     msgEl.style.height = 'auto';
