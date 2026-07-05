@@ -353,6 +353,11 @@
     .chatlog{max-height:40vh}
     .foot-in{justify-content:center;text-align:center}
   }
+
+  /* Synergies4 asset highlighting in Luma's replies */
+  .s4-asset{font-weight:700;text-decoration:underline;color:inherit}
+  a.s4-asset{cursor:pointer}
+  a.s4-asset:hover{opacity:.8}
 </style>
 </head>
 <body>
@@ -605,6 +610,82 @@
     note.className = 'note' + (isError ? ' error' : '');
   }
 
+  // ---- Synergies4 asset dictionary ----
+  // To add or update an asset later: add/edit one line here. url: null = bold+underline only (no link yet).
+  var S4_ASSETS = [
+    { name: 'Coach Luma', url: 'https://robsaiadvisor.com' },
+    { name: 'Synergies4 Genie', url: 'https://chatgpt.com/g/g-67fa7c8bb9708191b44406d659d893f1-s4-genie-tm-ai-powered-course-creator' },
+    { name: 'S4 Genie', url: 'https://chatgpt.com/g/g-67fa7c8bb9708191b44406d659d893f1-s4-genie-tm-ai-powered-course-creator' },
+    { name: 'Genie', url: 'https://chatgpt.com/g/g-67fa7c8bb9708191b44406d659d893f1-s4-genie-tm-ai-powered-course-creator' },
+    { name: 'ShadowShield', url: 'https://www.shadowshieldai.com/' },
+    { name: 'Retro-4-Real', url: 'https://retro-4-real.vercel.app/auth/login' },
+    { name: 'AI Factory', url: null },
+    { name: 'Synergies4 AI Workforce Intelligence Engine', url: null },
+    { name: 'AI Workforce Intelligence Engine', url: null },
+    { name: 'Workforce Intelligence Engine', url: null },
+    { name: 'Synergies4 Digital Twins', url: 'https://www.perplexity.ai/spaces/s4-partner-ai-digital-twins-L_Y_MLsPSkOpeAEaRPwaNg' },
+    { name: 'Digital Twins', url: 'https://www.perplexity.ai/spaces/s4-partner-ai-digital-twins-L_Y_MLsPSkOpeAEaRPwaNg' },
+    { name: 'AI Twin', url: 'https://www.perplexity.ai/spaces/s4-partner-ai-digital-twins-L_Y_MLsPSkOpeAEaRPwaNg' },
+    { name: 'AI Learning Community', url: null },
+    { name: 'AI Fluency Assessment', url: 'https://chatgpt.com/g/g-686c11e3a0c08191b8d55623703fef55-s4-ai-assessment' },
+    { name: 'Personalized Learning Journey', url: null },
+    { name: 'Personalized Micro-Learning Roadmap', url: null },
+    { name: 'AI Transformation Quest', url: null },
+    { name: 'Learning Pods', url: null },
+    { name: 'Enterprise AI Training', url: null },
+    { name: 'AI Adoption Programs', url: null },
+    { name: 'S4 POP', url: 'https://chatgpt.com/g/g-68b8894692848191819b5d3ca1aebd59-s4-personal-operating-profile-pop' },
+    { name: '360 POP', url: 'https://chatgpt.com/g/g-68b8894692848191819b5d3ca1aebd59-s4-personal-operating-profile-pop' },
+    { name: 'Personal Operating Profile', url: 'https://chatgpt.com/g/g-68b8894692848191819b5d3ca1aebd59-s4-personal-operating-profile-pop' },
+    { name: 'AGDF', url: null },
+    { name: 'Truth Engine', url: null },
+    { name: 'Empathy Mirror', url: null },
+    { name: 'Career Optimizer', url: null },
+    { name: 'AI Job Disruption Risk Index', url: null },
+    { name: 'AI Job Disruption Risk', url: null }
+  ];
+
+  var s4AssetRegex = (function(){
+    var names = S4_ASSETS.map(function(a){ return a.name; })
+      .sort(function(x, y){ return y.length - x.length; })
+      .map(function(n){ return n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); });
+    return new RegExp('\\b(' + names.join('|') + ')(s)?(\u2122)?', 'gi');
+  })();
+
+  function s4AssetUrl(name){
+    var lower = name.toLowerCase();
+    for (var i = 0; i < S4_ASSETS.length; i++){
+      if (S4_ASSETS[i].name.toLowerCase() === lower) return S4_ASSETS[i].url;
+    }
+    return null;
+  }
+
+  // Turns Luma's plain text into text + styled asset names (bold, underline, clickable if a URL exists)
+  function highlightAssets(text){
+    var frag = document.createDocumentFragment();
+    var last = 0, m;
+    s4AssetRegex.lastIndex = 0;
+    while ((m = s4AssetRegex.exec(text)) !== null){
+      if (m.index > last) frag.appendChild(document.createTextNode(text.slice(last, m.index)));
+      var url = s4AssetUrl(m[1]);
+      var el;
+      if (url){
+        el = document.createElement('a');
+        el.href = url;
+        el.target = '_blank';
+        el.rel = 'noopener';
+      } else {
+        el = document.createElement('span');
+      }
+      el.className = 's4-asset';
+      el.textContent = m[0];
+      frag.appendChild(el);
+      last = m.index + m[0].length;
+    }
+    frag.appendChild(document.createTextNode(text.slice(last)));
+    return frag;
+  }
+
   // ---- Chat rendering ----
   function addMsg(role, text, extraClass){
     var div = document.createElement('div');
@@ -613,7 +694,7 @@
       var b = document.createElement('b');
       b.textContent = 'Coach Luma: ';
       div.appendChild(b);
-      div.appendChild(document.createTextNode(text));
+      div.appendChild(highlightAssets(text));
     } else {
       div.textContent = text;
     }
