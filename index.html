@@ -245,6 +245,18 @@
   }
   .chip:hover{border-color:var(--blue);color:var(--blue);transform:translateY(-1px);box-shadow:0 6px 16px rgba(47,125,246,.14)}
 
+  /* ---------- Persona self-select (which one sounds like you) ---------- */
+  .persona{
+    max-width:1120px;margin:34px auto 0;padding:0 28px;width:100%;text-align:center;
+    animation:rise .7s .16s ease-out both;
+  }
+  .persona h2{
+    font-family:'Sora',sans-serif;font-size:clamp(20px,2.4vw,26px);
+    font-weight:700;letter-spacing:-.02em;color:var(--ink);
+  }
+  .persona p{margin:8px auto 18px;max-width:520px;color:var(--slate);font-size:14.5px;line-height:1.55}
+  .persona-row{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+
   /* ---------- Ecosystem section ---------- */
   .eco{
     max-width:1120px;margin:38px auto 0;padding:0 28px 8px;width:100%;
@@ -474,6 +486,23 @@
   <button class="chip" data-ask="How does the Workforce Intelligence Engine assess and grow AI capability?">Workforce Intelligence Engine™</button>
   <button class="chip" data-ask="What is Retro-4-Real and how does it improve team retrospectives?">Retro-4-Real™</button>
 </div>
+
+<section class="persona" aria-label="Which role sounds like you">
+  <h2>Which one sounds like you?</h2>
+  <p>Tap your role — Luma will show you your path.</p>
+  <div class="persona-row">
+    <button class="chip" data-ask="I'm an administrative or executive assistant and I'm worried AI will replace my job. How can Synergies4 help me assess my risk and build a path forward?">Admin / Executive Assistant</button>
+    <button class="chip" data-ask="I work in customer service / a call center and AI agents are taking over my industry. What can Synergies4 do for me?">Customer Service Agent</button>
+    <button class="chip" data-ask="I'm a bookkeeper or accounting clerk and automation is eating my daily tasks. How do I stay valuable? Can Synergies4 help?">Bookkeeper / Accounting Clerk</button>
+    <button class="chip" data-ask="I'm a paralegal and AI is doing document review now. How can Synergies4 help me protect my legal career?">Paralegal / Legal Support</button>
+    <button class="chip" data-ask="I'm a junior software developer / QA tester and entry-level tech jobs are shrinking. How can Synergies4 help me reposition toward AI skills?">Junior Developer / QA</button>
+    <button class="chip" data-ask="I do data entry / claims processing and I know my role is at high risk from AI. Where do I start? How can Synergies4 help?">Data Entry / Claims Processor</button>
+    <button class="chip" data-ask="I'm a marketing / content professional and generative AI has changed my field overnight. How can Synergies4 help me stay ahead?">Marketing / Content Creator</button>
+    <button class="chip" data-ask="I'm a mid-career manager and companies are flattening management layers with AI. How can Synergies4 help me become an AI-fluent leader?">Middle Manager</button>
+    <button class="chip" data-ask="I work in frontline banking / financial services and branches are closing. How can Synergies4 help me retrain?">Bank Teller / Frontline Finance</button>
+    <button class="chip" data-ask="I'm an educator / corporate trainer and AI is transforming learning itself. How can Synergies4 help me evolve my career?">Educator / Corporate Trainer</button>
+  </div>
+</section>
 
 <section class="eco">
   <h2>The S4 Enterprise AI Ecosystem</h2>
