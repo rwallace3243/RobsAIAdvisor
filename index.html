@@ -113,16 +113,6 @@
     width:100%;max-width:320px;display:block;
     filter:drop-shadow(0 24px 40px rgba(13,27,46,.16));
   }
-  .greet{
-    position:absolute;z-index:2;top:-8px;left:-34px;max-width:236px;
-    background:rgba(255,255,255,.92);backdrop-filter:blur(6px);
-    border:1px solid var(--line);
-    border-radius:16px 16px 16px 4px;
-    box-shadow:0 12px 32px rgba(13,27,46,.10);
-    padding:14px 16px;font-size:14px;line-height:1.5;color:var(--slate);
-  }
-  .greet strong{color:var(--blue)}
-
   .panel{
     flex:1;max-width:600px;
     padding:14px 0 46px;text-align:center;
@@ -333,11 +323,9 @@
     .panel{padding:4px 0 26px}
     .luma-wrap{flex:0 0 auto;width:220px}
     .aura{width:380px;height:380px;bottom:16px}
-    .greet{left:-42px;top:-4px;max-width:196px;font-size:13px}
     .strip{gap:8px}
     .strip-label{width:100%;margin:0 0 2px}
     body.chatting .luma-wrap{width:132px}
-    body.chatting .greet{display:none}
     .chatlog{max-height:40vh}
     .foot-in{justify-content:center;text-align:center}
   }
@@ -379,9 +367,6 @@
 <main class="stage">
   <div class="luma-wrap">
     <div class="aura" aria-hidden="true"></div>
-    <div class="greet" id="greet">
-      Hi, I'm <strong>Coach Luma</strong>, Synergies4's Digital AI Advisor. What's on your mind today?
-    </div>
     <img id="lumaImg" src="luma-welcome.png" alt="Coach Luma, Synergies4's digital AI advisor, welcoming you">
   </div>
 
@@ -477,7 +462,6 @@
   var submitBtn = document.getElementById('submitBtn');
   var note = document.getElementById('note');
   var chatlog = document.getElementById('chatlog');
-  var greet = document.getElementById('greet');
   var langSel = document.getElementById('langSel');
 
   var history = [];
@@ -691,7 +675,6 @@
       document.body.classList.add('chatting');
       var lumaImg = document.getElementById('lumaImg');
       if (lumaImg) lumaImg.src = 'luma.png';
-      greet.style.display = 'none';
       submitBtn.textContent = 'Send';
       msgEl.placeholder = 'Reply to Coach Luma...';
     }
