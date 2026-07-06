@@ -679,12 +679,14 @@
   // To add or update an asset later: add/edit one line here. url: null = bold+underline only (no link yet).
   var S4_ASSETS = [
     { name: 'Coach Luma', url: 'https://robsaiadvisor.com' },
+    { name: 'Subscription Sam', url: 'https://sam-demo.pages.dev/' },
     { name: 'Synergies4 Genie', url: 'https://chatgpt.com/g/g-67fa7c8bb9708191b44406d659d893f1-s4-genie-tm-ai-powered-course-creator' },
     { name: 'S4 Genie', url: 'https://chatgpt.com/g/g-67fa7c8bb9708191b44406d659d893f1-s4-genie-tm-ai-powered-course-creator' },
     { name: 'Genie', url: 'https://chatgpt.com/g/g-67fa7c8bb9708191b44406d659d893f1-s4-genie-tm-ai-powered-course-creator' },
     { name: 'ShadowShield', url: 'https://www.shadowshieldai.com/' },
     { name: 'Retro-4-Real', url: 'https://retro-4-real.vercel.app/auth/login' },
     { name: 'AI Factory', url: null },
+    { name: 'AI Solution Learning Pods', url: null },
     { name: 'Synergies4 AI Workforce Intelligence Engine', url: null },
     { name: 'AI Workforce Intelligence Engine', url: null },
     { name: 'Workforce Intelligence Engine', url: null },
@@ -699,6 +701,7 @@
     { name: 'Learning Pods', url: null },
     { name: 'Enterprise AI Training', url: null },
     { name: 'AI Adoption Programs', url: null },
+    { name: 'Adoption Programs', url: null },
     { name: 'S4 POP', url: 'https://chatgpt.com/g/g-68b8894692848191819b5d3ca1aebd59-s4-personal-operating-profile-pop' },
     { name: '360 POP', url: 'https://chatgpt.com/g/g-68b8894692848191819b5d3ca1aebd59-s4-personal-operating-profile-pop' },
     { name: 'Personal Operating Profile', url: 'https://chatgpt.com/g/g-68b8894692848191819b5d3ca1aebd59-s4-personal-operating-profile-pop' },
@@ -725,16 +728,61 @@
     return null;
   }
 
-  // Turns Luma's plain text into text + styled asset names (bold, underline, clickable if a URL exists)
-  function highlightAssets(text){
+  // Renders one of Luma's replies into safe DOM: light Markdown (bold / italic / links /
+  // bullets / headings) PLUS S4 asset styling — every Synergies4 product/service is bolded
+  // and underlined, and hyperlinked whenever the dictionary has a real URL for it.
+  function renderLumaReply(text){
     var frag = document.createDocumentFragment();
+    var lines = String(text == null ? '' : text).split(/\r?\n/);
+    for (var i = 0; i < lines.length; i++){
+      if (i > 0) frag.appendChild(document.createElement('br'));
+      var line = lines[i]
+        .replace(/^#{1,6}\s+/, '')        // strip Markdown heading markers
+        .replace(/^\s*[-*+]\s+/, '• '); // turn "- item" / "* item" into "• item"
+      appendInline(line, frag, false);
+    }
+    return frag;
+  }
+
+  // Inline Markdown: [label](url), **bold**, *italic*. Anything else flows to asset styling.
+  var MD_INLINE = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|\*\*([^*]+)\*\*|\*([^*]+)\*/;
+  function appendInline(str, parent, inLink){
+    var m;
+    while (str && (m = MD_INLINE.exec(str)) !== null){
+      if (m.index > 0) appendAssets(str.slice(0, m.index), parent, inLink);
+      if (m[1] != null){                 // [label](url)
+        if (inLink){                     // never nest anchors — keep label styled only
+          appendAssets(m[1], parent, true);
+        } else {
+          var a = document.createElement('a');
+          a.href = m[2]; a.target = '_blank'; a.rel = 'noopener';
+          appendAssets(m[1], a, true);
+          parent.appendChild(a);
+        }
+      } else if (m[3] != null){          // **bold**
+        var strong = document.createElement('strong');
+        appendInline(m[3], strong, inLink);
+        parent.appendChild(strong);
+      } else {                           // *italic*
+        var em = document.createElement('em');
+        appendInline(m[4], em, inLink);
+        parent.appendChild(em);
+      }
+      str = str.slice(m.index + m[0].length);
+    }
+    if (str) appendAssets(str, parent, inLink);
+  }
+
+  // Wraps S4 asset names (bold + underline via .s4-asset). Adds a hyperlink when a real URL
+  // exists — unless we're already inside a link (inLink), where a styled span is used instead.
+  function appendAssets(text, parent, inLink){
     var last = 0, m;
     s4AssetRegex.lastIndex = 0;
     while ((m = s4AssetRegex.exec(text)) !== null){
-      if (m.index > last) frag.appendChild(document.createTextNode(text.slice(last, m.index)));
+      if (m.index > last) parent.appendChild(document.createTextNode(text.slice(last, m.index)));
       var url = s4AssetUrl(m[1]);
       var el;
-      if (url){
+      if (url && !inLink){
         el = document.createElement('a');
         el.href = url;
         el.target = '_blank';
@@ -744,11 +792,10 @@
       }
       el.className = 's4-asset';
       el.textContent = m[0];
-      frag.appendChild(el);
+      parent.appendChild(el);
       last = m.index + m[0].length;
     }
-    frag.appendChild(document.createTextNode(text.slice(last)));
-    return frag;
+    if (last < text.length) parent.appendChild(document.createTextNode(text.slice(last)));
   }
 
   // ---- Chat rendering ----
@@ -759,7 +806,7 @@
       var b = document.createElement('b');
       b.textContent = 'Coach Luma: ';
       div.appendChild(b);
-      div.appendChild(highlightAssets(text));
+      div.appendChild(renderLumaReply(text));
     } else {
       div.textContent = text;
     }
