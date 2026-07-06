@@ -334,6 +334,62 @@
   .s4-asset{font-weight:700;text-decoration:underline;color:inherit}
   a.s4-asset{cursor:pointer}
   a.s4-asset:hover{opacity:.8}
+
+  /* ---------- S4 AI Fluency Resume™ reveal ---------- */
+  /* Emerges, developing like a photo, whenever Luma recommends the AI Fluency Assessment */
+  .resume-reveal{
+    position:fixed;right:26px;bottom:26px;z-index:80;
+    width:min(360px,44vw);
+    display:block;text-decoration:none;color:var(--ink);
+    background:#fff;border:1px solid var(--line);border-radius:20px;
+    box-shadow:0 30px 70px rgba(13,27,46,.28);
+    padding:12px 12px 14px;
+    opacity:0;transform:translateY(28px) scale(.94);
+    pointer-events:none;
+    transition:opacity 1.3s ease,transform 1.3s cubic-bezier(.2,.75,.2,1);
+  }
+  .resume-reveal.show{opacity:1;transform:none;pointer-events:auto}
+  .resume-reveal:hover{box-shadow:0 36px 84px rgba(47,125,246,.34)}
+  .resume-ribbon{
+    font-family:'Sora',sans-serif;font-weight:700;font-size:13px;
+    color:#fff;background:var(--grad);
+    border-radius:12px;padding:8px 14px;margin-bottom:10px;text-align:center;
+    box-shadow:0 8px 18px rgba(47,125,246,.28);
+  }
+  .resume-frame{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+  .resume-frame img{
+    width:100%;height:auto;display:block;
+    filter:blur(16px) grayscale(.7) contrast(.92);opacity:.35;transform:scale(1.04);
+    transition:filter 2.4s ease,opacity 2.4s ease,transform 2.4s ease;
+  }
+  .resume-reveal.show .resume-frame img{filter:none;opacity:1;transform:none}
+  .resume-shimmer{
+    position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%);
+    transform:translateX(-120%);
+  }
+  .resume-reveal.show .resume-shimmer{animation:resumeSweep 1.8s ease-out .6s 1}
+  @keyframes resumeSweep{to{transform:translateX(120%)}}
+  .resume-cap{margin-top:10px;font-size:12.5px;line-height:1.45;color:var(--slate);text-align:center}
+  .resume-cap b{color:var(--blue)}
+  .resume-close{
+    position:absolute;top:-10px;right:-10px;z-index:2;
+    width:28px;height:28px;border-radius:50%;border:1px solid var(--line);
+    background:#fff;color:var(--slate);font-size:18px;line-height:1;
+    cursor:pointer;box-shadow:0 6px 16px rgba(13,27,46,.16);
+    display:flex;align-items:center;justify-content:center;
+    transition:transform .12s,color .15s;
+  }
+  .resume-close:hover{color:#c43d3d;transform:scale(1.08)}
+  @media (prefers-reduced-motion:reduce){
+    .resume-reveal{transition:opacity .5s ease}
+    .resume-frame img{transition:opacity .5s ease,filter .5s ease}
+    .resume-reveal.show .resume-shimmer{animation:none}
+  }
+  @media (max-width:780px){
+    .resume-reveal{right:12px;left:12px;bottom:12px;width:auto}
+    .resume-frame img{max-height:46vh;object-fit:cover;object-position:top}
+  }
 </style>
 </head>
 <body>
@@ -397,6 +453,19 @@
     <div class="note" id="note"></div>
   </div>
 </main>
+
+<!-- S4 AI Fluency Resume™ — emerges when Luma recommends the AI Fluency Assessment -->
+<a class="resume-reveal" id="resumeReveal" href="#" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1"
+   aria-label="Open the S4 AI Fluency Assessment — see a sample AI Fluency Resume">
+  <button class="resume-close" id="resumeClose" type="button" aria-label="Dismiss">&times;</button>
+  <div class="resume-ribbon">Your S4 AI Fluency Resume&trade;</div>
+  <div class="resume-frame">
+    <img id="resumeImg" src="s4-ai-fluency-resume.png"
+      alt="Sample S4 AI Fluency Resume — a personalized report showing your AI fluency score, top strengths, competency profile, and future-role alignment">
+    <span class="resume-shimmer" aria-hidden="true"></span>
+  </div>
+  <div class="resume-cap">A sample of what your assessment reveals — <b>tap to begin yours</b></div>
+</a>
 
 <div class="strip" aria-label="Ask Luma about Synergies4 solutions">
   <span class="strip-label">Ask Luma about</span>
@@ -667,7 +736,41 @@
     }
     chatlog.appendChild(div);
     chatlog.scrollTop = chatlog.scrollHeight;
+    if (role === 'luma' && !extraClass) maybeRevealResume(text);
     return div;
+  }
+
+  // ---- S4 AI Fluency Resume™ reveal ----
+  // When Luma recommends the AI Fluency Assessment, gently develop the sample resume into view.
+  var resumeReveal = document.getElementById('resumeReveal');
+  var resumeImg = document.getElementById('resumeImg');
+  var resumeClose = document.getElementById('resumeClose');
+  var resumeShown = false, resumeReady = true;
+  var ASSESSMENT_RE = /ai\s*fluency\s*(assessment|resume)|fluency\s*(assessment|resume)|\bai\s*assessment\b|take\s+the\s+assessment/i;
+
+  if (resumeReveal){
+    resumeReveal.href = s4AssetUrl('AI Fluency Assessment') || '#';
+    if (resumeImg){
+      resumeImg.addEventListener('error', function(){ resumeReady = false; });
+    }
+    resumeClose.addEventListener('click', function(e){
+      e.preventDefault(); e.stopPropagation();
+      resumeReveal.classList.remove('show');
+      resumeReveal.setAttribute('aria-hidden', 'true');
+      resumeReveal.setAttribute('tabindex', '-1');
+    });
+  }
+
+  function maybeRevealResume(text){
+    if (resumeShown || !resumeReady || !resumeReveal || !text) return;
+    if (!ASSESSMENT_RE.test(text)) return;
+    resumeShown = true;
+    resumeReveal.setAttribute('aria-hidden', 'false');
+    resumeReveal.removeAttribute('tabindex');
+    // paint the hidden state first, then flip the class so the transition plays
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){ resumeReveal.classList.add('show'); });
+    });
   }
 
   function enterChatMode(){
