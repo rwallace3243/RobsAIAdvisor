@@ -214,20 +214,6 @@
     100%{box-shadow:0 0 0 0 rgba(225,74,74,0)}
   }
 
-  .or{margin:16px 0 12px;color:var(--mist);font-size:12px;font-weight:700;letter-spacing:.14em}
-  body.chatting .or{display:none}
-  .speakbtn{
-    display:inline-flex;align-items:center;gap:9px;
-    border:1px solid var(--line);background:#fff;color:var(--blue);
-    font:inherit;font-weight:700;font-size:15px;
-    padding:12px 24px;border-radius:999px;
-    box-shadow:0 8px 22px rgba(13,27,46,.07);
-    cursor:pointer;transition:border-color .15s,transform .12s;
-  }
-  .speakbtn:hover{border-color:var(--blue);transform:translateY(-1px)}
-  .speakbtn.listening{color:#e14a4a;border-color:#e14a4a}
-  body.chatting .speakbtn{display:none}
-
   .emailrow{margin-top:20px}
   .emailrow input{
     width:100%;max-width:380px;font:inherit;font-size:15px;color:var(--ink);
@@ -416,14 +402,6 @@
       </button>
     </div>
 
-    <div class="or">OR</div>
-    <button class="speakbtn" id="speakBtn" type="button">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-        <path d="M4 10a1 1 0 0 1 1 1v2a1 1 0 1 1-2 0v-2a1 1 0 0 1 1-1Zm4-4a1 1 0 0 1 1 1v10a1 1 0 1 1-2 0V7a1 1 0 0 1 1-1Zm4-3a1 1 0 0 1 1 1v16a1 1 0 1 1-2 0V4a1 1 0 0 1 1-1Zm4 4a1 1 0 0 1 1 1v8a1 1 0 1 1-2 0V8a1 1 0 0 1 1-1Zm4 3a1 1 0 0 1 1 1v2a1 1 0 1 1-2 0v-2a1 1 0 0 1 1-1Z"/>
-      </svg>
-      <span id="speakLabel">Tap to speak</span>
-    </button>
-
     <div class="emailrow" id="emailRow">
       <input type="email" id="email" placeholder="Your email (optional, so we can follow up)" aria-label="Your email (optional)">
     </div>
@@ -496,8 +474,6 @@
   var emailEl = document.getElementById('email');
   var emailRow = document.getElementById('emailRow');
   var micBtn = document.getElementById('micBtn');
-  var speakBtn = document.getElementById('speakBtn');
-  var speakLabel = document.getElementById('speakLabel');
   var submitBtn = document.getElementById('submitBtn');
   var note = document.getElementById('note');
   var chatlog = document.getElementById('chatlog');
@@ -581,9 +557,6 @@
     recog.onend = function(){ if (listening) { stopListening(); } };
   } else {
     micBtn.style.display = 'none';
-    speakBtn.style.display = 'none';
-    var orEl = document.querySelector('.or');
-    if (orEl) orEl.style.display = 'none';
   }
 
   langSel.addEventListener('change', function(){
@@ -604,21 +577,16 @@
     try { recog.start(); } catch(_) {}
     listening = true;
     micBtn.classList.add('listening');
-    speakBtn.classList.add('listening');
-    speakLabel.textContent = 'Listening... tap to stop';
     setNote('Listening — your words will appear as you speak.');
   }
   function stopListening(){
     listening = false;
     try { recog.stop(); } catch(_) {}
     micBtn.classList.remove('listening');
-    speakBtn.classList.remove('listening');
-    speakLabel.textContent = 'Tap to speak';
     setNote('');
   }
   function toggleListening(){ listening ? stopListening() : startListening(); }
   micBtn.addEventListener('click', toggleListening);
-  speakBtn.addEventListener('click', toggleListening);
 
   function setNote(text, isError){
     note.textContent = text || '';
