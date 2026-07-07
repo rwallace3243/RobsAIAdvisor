@@ -859,6 +859,23 @@
     }
   }
 
+  // ---- Drop Luma's "leave your email" solicitations ----
+  // The brain sometimes ends replies by asking for an email; the email field already lives
+  // in the form, so strip any sentence that solicits one before showing/speaking the reply.
+  var EMAIL_WORD = /e-?mail/i;
+  var EMAIL_SOLICIT = /(your|an?|us|me)\s+e-?mail/i;
+  var EMAIL_REQUEST = /\b(leav\w*|shar\w*|provid\w*|drop\w*|enter\w*|giv\w*|add\w*|send\w*|includ\w*|suppl\w*|input\w*|fill\w*|typ\w*|pop|jot\w*)\b/i;
+  function stripEmailAsk(text){
+    if (!text) return text;
+    var sentences = String(text).match(/[^.!?\n]+[.!?]*(?:\s+|\n+|$)/g);
+    if (!sentences) return text;
+    var kept = sentences.filter(function(s){
+      return !(EMAIL_WORD.test(s) && (EMAIL_SOLICIT.test(s) || EMAIL_REQUEST.test(s)));
+    });
+    var out = kept.join('').replace(/[ \t]{2,}/g, ' ').replace(/\s+([.!?,])/g, '$1').trim();
+    return out || text; // never blank the whole reply
+  }
+
   // ---- Send a message ----
   submitBtn.addEventListener('click', function(){
     var message = msgEl.value.trim();
@@ -906,11 +923,12 @@
       return res.json();
     }).then(function(data){
       thinking.remove();
-      var reply = (data && data.reply) ? data.reply :
+      var rawReply = (data && data.reply) ? data.reply :
         "I'm sorry — I had trouble responding. Please try again.";
+      var reply = stripEmailAsk(rawReply);
       addMsg('luma', reply);
       history.push({ role: 'luma', text: reply });
-      speakReply(data);
+      speakReply(data, reply, reply !== rawReply);
       submitBtn.disabled = false;
       msgEl.focus();
     }).catch(function(){
@@ -921,16 +939,19 @@
   });
 
   // ---- Luma speaks ----
-  function speakReply(data){
+  // `text` is the cleaned reply; when it differs from the server's original (`changed`),
+  // skip the pre-generated audio (which still contains the email ask) and speak the clean text.
+  function speakReply(data, text, changed){
     stopLumaVoice();
-    if (data && data.audio){
+    var say = text || (data && data.reply);
+    if (data && data.audio && !changed){
       try {
         lumaAudio = new Audio('data:audio/mp3;base64,' + data.audio);
-        lumaAudio.play().catch(function(){ browserSpeak(data.reply, data.lang); });
+        lumaAudio.play().catch(function(){ browserSpeak(say, data.lang); });
         return;
       } catch(_) { /* fall through */ }
     }
-    if (data && data.reply) browserSpeak(data.reply, data.lang);
+    if (say) browserSpeak(say, data && data.lang);
   }
 
   function browserSpeak(text, lang){
