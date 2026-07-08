@@ -872,6 +872,7 @@
     var kept = sentences.filter(function(s){
       return !(EMAIL_WORD.test(s) && (EMAIL_SOLICIT.test(s) || EMAIL_REQUEST.test(s)));
     });
+    if (kept.length === sentences.length) return text;
     var out = kept.join('').replace(/[ \t]{2,}/g, ' ').replace(/\s+([.!?,])/g, '$1').trim();
     return out || text; // never blank the whole reply
   }
