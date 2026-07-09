@@ -88,8 +88,8 @@
   }
 
   .luma-wrap{
-    position:relative;flex:0 0 320px;
-    display:flex;align-items:flex-end;justify-content:center;
+    position:relative;flex:0 0 320px;align-self:stretch;
+    display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
     animation:rise .7s ease-out both;
   }
   /* Signature: the breathing aura */
@@ -258,14 +258,17 @@
   .persona-row{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
 
   /* ---------- Doomsday / AI Job Risk Quick Check CTA ---------- */
-  .doomsday{max-width:1120px;margin:30px auto 0;padding:0 28px;width:100%;text-align:center;
+  /* Sits at the top of Coach Luma's column, in the open space above her. */
+  .doomsday{width:100%;margin:0 0 auto;padding:6px 6px 0;text-align:center;
     animation:rise .7s .16s ease-out both}
+  body.chatting .doomsday{display:none}
   .doomsday-cta{
-    display:inline-flex;align-items:center;gap:12px;
-    font:inherit;font-weight:800;font-size:16px;letter-spacing:-.01em;color:#fff;
+    display:inline-flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 10px;
+    max-width:100%;
+    font:inherit;font-weight:800;font-size:15px;letter-spacing:-.01em;color:#fff;
     background:linear-gradient(120deg,#0d1b2e 0%,#16294a 58%,#2a2c60 100%);
-    border:1px solid rgba(47,125,246,.45);border-radius:999px;
-    padding:14px 26px;cursor:pointer;
+    border:1px solid rgba(47,125,246,.45);border-radius:20px;
+    padding:12px 20px;cursor:pointer;
     box-shadow:0 14px 34px rgba(13,27,46,.28);
     transition:transform .12s,box-shadow .2s;
   }
@@ -277,7 +280,7 @@
     padding:4px 10px;border-radius:999px;
   }
   @media (max-width:780px){
-    .doomsday-cta{font-size:15px;padding:12px 20px;flex-wrap:wrap;justify-content:center;gap:8px}
+    .doomsday-cta{font-size:14.5px;padding:11px 16px}
   }
 
   /* ---------- Ecosystem section ---------- */
@@ -457,6 +460,12 @@
 
 <main class="stage">
   <div class="luma-wrap">
+    <section class="doomsday" aria-label="AI Job Risk Quick Check">
+      <button class="doomsday-cta" id="doomsdayBtn" type="button">
+        <span aria-hidden="true">🔮</span> Will AI take my job?
+        <span class="dc-tag">60-sec Risk Check</span>
+      </button>
+    </section>
     <div class="aura" aria-hidden="true"></div>
     <img id="lumaImg" src="luma-welcome.png" alt="Coach Luma, Synergies4's digital AI advisor, welcoming you">
   </div>
@@ -509,13 +518,6 @@
   <button class="chip" data-ask="How does the Workforce Intelligence Engine assess and grow AI capability?">Workforce Intelligence Engine™</button>
   <button class="chip" data-ask="What is Retro-4-Real and how does it improve team retrospectives?">Retro-4-Real™</button>
 </div>
-
-<section class="doomsday" aria-label="AI Job Risk Quick Check">
-  <button class="doomsday-cta" id="doomsdayBtn" type="button">
-    <span aria-hidden="true">🔮</span> Will AI take my job?
-    <span class="dc-tag">60-sec Risk Check</span>
-  </button>
-</section>
 
 <section class="persona" aria-label="Which role sounds like you">
   <h2>Which one sounds like you?</h2>
