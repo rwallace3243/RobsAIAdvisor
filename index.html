@@ -867,7 +867,9 @@
   var EMAIL_REQUEST = /\b(leav\w*|shar\w*|provid\w*|drop\w*|enter\w*|giv\w*|add\w*|send\w*|includ\w*|suppl\w*|input\w*|fill\w*|typ\w*|pop|jot\w*)\b/i;
   function stripEmailAsk(text){
     if (!text) return text;
-    var sentences = String(text).match(/[^.!?\n]+[.!?]*(?:\s+|\n+|$)/g);
+    // A period only ends a sentence when followed by whitespace/end, so URLs (synergies4.com),
+    // decimals (8.9) and abbreviations aren't split mid-token and mangled on rejoin.
+    var sentences = String(text).match(/(?:[^.!?\n]|[.!?](?=[^\s.!?\n]))+[.!?]*(?:\s+|\n+|$)/g);
     if (!sentences) return text;
     var kept = sentences.filter(function(s){
       return !(EMAIL_WORD.test(s) && (EMAIL_SOLICIT.test(s) || EMAIL_REQUEST.test(s)));

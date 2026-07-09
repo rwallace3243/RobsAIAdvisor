@@ -182,6 +182,9 @@ export default {
       if (parsed.lang) lang = normalizeLang(parsed.lang, prefLang);
     } catch { /* fall back to defaults */ }
 
+    // Remove any sentence that solicits the visitor's email before speaking or returning it.
+    reply = stripEmailAsk(reply);
+
     // ---- 2) Turn the reply into speech with Google Cloud TTS (Leda)
     let audio = null;
     try {
@@ -221,6 +224,25 @@ function normalizeLang(code, prefLang) {
   const base = code.split("-")[0].toLowerCase();
   const map = { en:"en-US", es:"es-US", fr:"fr-FR", de:"de-DE", pt:"pt-BR", it:"it-IT", hi:"hi-IN", ja:"ja-JP", ko:"ko-KR" };
   return map[base] || "en-US";
+}
+
+// Strip any sentence that solicits the visitor's email address (ported from the site's
+// stripEmailAsk in index.html). Legitimate mentions like "I can email you a summary" are kept.
+const EMAIL_WORD = /e-?mail/i;
+const EMAIL_SOLICIT = /(your|an?|us|me)\s+e-?mail/i;
+const EMAIL_REQUEST = /\b(leav\w*|shar\w*|provid\w*|drop\w*|enter\w*|giv\w*|add\w*|send\w*|includ\w*|suppl\w*|input\w*|fill\w*|typ\w*|pop|jot\w*)\b/i;
+function stripEmailAsk(text) {
+  if (!text) return text;
+  // A period only ends a sentence when followed by whitespace/end, so URLs (synergies4.com),
+  // decimals (8.9) and abbreviations aren't split mid-token and mangled on rejoin.
+  const sentences = String(text).match(/(?:[^.!?\n]|[.!?](?=[^\s.!?\n]))+[.!?]*(?:\s+|\n+|$)/g);
+  if (!sentences) return text;
+  const kept = sentences.filter(function (s) {
+    return !(EMAIL_WORD.test(s) && (EMAIL_SOLICIT.test(s) || EMAIL_REQUEST.test(s)));
+  });
+  if (kept.length === sentences.length) return text;
+  const out = kept.join("").replace(/[ \t]{2,}/g, " ").replace(/\s+([.!?,])/g, "$1").trim();
+  return out || text;
 }
 
 function json(obj, status, corsHeaders) {
