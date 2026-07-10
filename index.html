@@ -238,12 +238,17 @@
   }
   .strip-label{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mist);margin-right:4px}
   .chip{
-    font:inherit;font-size:13.5px;font-weight:600;color:var(--navy);
-    background:#fff;border:1px solid var(--line);border-radius:999px;
-    padding:9px 18px;cursor:pointer;
-    transition:border-color .15s,color .15s,transform .12s,box-shadow .15s;
+    font:inherit;color:var(--navy);
+    background:#fff;border:1px solid var(--line);border-radius:16px;
+    padding:11px 18px;cursor:pointer;
+    display:flex;flex-direction:column;gap:3px;text-align:left;
+    flex:0 1 auto;min-width:190px;max-width:250px;
+    transition:border-color .15s,transform .12s,box-shadow .15s;
   }
-  .chip:hover{border-color:var(--blue);color:var(--blue);transform:translateY(-1px);box-shadow:0 6px 16px rgba(47,125,246,.14)}
+  .chip:hover{border-color:var(--blue);transform:translateY(-1px);box-shadow:0 6px 16px rgba(47,125,246,.14)}
+  .chip-title{font-weight:700;font-size:14px;letter-spacing:-.01em;color:var(--navy)}
+  .chip:hover .chip-title{color:var(--blue)}
+  .chip-sub{font-size:11.5px;font-weight:500;line-height:1.38;color:var(--slate)}
 
   /* ---------- Persona self-select (which one sounds like you) ---------- */
   .persona{
@@ -522,10 +527,26 @@
 
 <div class="strip" aria-label="Ask Luma about Synergies4 solutions">
   <span class="strip-label">Ask Luma about</span>
-  <button class="chip" data-ask="What is ShadowShield and how does it protect our data when using AI?">ShadowShield™</button>
-  <button class="chip" data-ask="Tell me about the Synergies4 AI Learning Community and its membership levels.">AI Learning Community</button>
-  <button class="chip" data-ask="How does the Workforce Intelligence Engine assess and grow AI capability?">Workforce Intelligence Engine™</button>
-  <button class="chip" data-ask="What is Retro-4-Real and how does it improve team retrospectives?">Retro-4-Real™</button>
+  <button class="chip" data-ask="__doomsday_start__">
+    <span class="chip-title">Is My Job Safe?</span>
+    <span class="chip-sub">Find out your real risk of AI displacement — and how much time you have.</span>
+  </button>
+  <button class="chip" data-ask="Tell me about the AI Fluency Assessment and how I can take it.">
+    <span class="chip-title">Where Do I Stand?</span>
+    <span class="chip-sub">Get your AI Fluency Assessment baseline — most people score lower than they think.</span>
+  </button>
+  <button class="chip" data-ask="Help me find a more AI-resilient role that fits my experience.">
+    <span class="chip-title">Find My Next Role</span>
+    <span class="chip-sub">Career Optimizer: target a role AI makes more valuable — and maximize what you earn.</span>
+  </button>
+  <button class="chip" data-ask="How does personalized micro-learning with Genie work?">
+    <span class="chip-title">Close the Gap</span>
+    <span class="chip-sub">Genie™ and Coach Luma build your path — one 10-minute skill at a time.</span>
+  </button>
+  <button class="chip" data-ask="Tell me about the WaiMore community.">
+    <span class="chip-title">Don't Learn Alone</span>
+    <span class="chip-sub">WaiMore™ — where members build real AI solutions together. The fastest way to learn is shipping.</span>
+  </button>
 </div>
 
 <!-- DISABLED FOR NOW — 10 job personas. Uncomment this block to re-enable.
@@ -638,9 +659,16 @@
   document.querySelectorAll('.chip, .hotspot').forEach(function(ch){
     ch.addEventListener('click', function(){
       if (submitBtn.disabled) return; // Luma is thinking — ignore extra taps
-      msgEl.value = ch.getAttribute('data-ask');
-      autosize();
-      submitBtn.click();
+      var ask = ch.getAttribute('data-ask');
+      if (ask === '__doomsday_start__') {
+        // Same code path as the "Will AI take my job?" button: fire the Risk Check trigger
+        // but show a friendly bubble instead of the raw token.
+        sendMessage('__doomsday_start__', 'Is my job safe?');
+      } else {
+        msgEl.value = ask;
+        autosize();
+        submitBtn.click();
+      }
       document.querySelector('.panel').scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
   });
@@ -737,6 +765,7 @@
     { name: 'Digital Twins', url: 'https://www.perplexity.ai/spaces/s4-partner-ai-digital-twins-L_Y_MLsPSkOpeAEaRPwaNg' },
     { name: 'AI Twin', url: 'https://www.perplexity.ai/spaces/s4-partner-ai-digital-twins-L_Y_MLsPSkOpeAEaRPwaNg' },
     { name: 'AI Learning Community', url: null },
+    { name: 'WaiMore', url: 'https://rwallace3243.github.io/waimore/' },
     { name: 'AI Fluency Assessment', url: 'https://chatgpt.com/g/g-686c11e3a0c08191b8d55623703fef55-s4-ai-assessment' },
     { name: 'Personalized Learning Journey', url: null },
     { name: 'Personalized Micro-Learning Roadmap', url: null },
