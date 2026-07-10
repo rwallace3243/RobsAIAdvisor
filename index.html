@@ -259,9 +259,9 @@
 
   /* ---------- Doomsday / AI Job Risk Quick Check CTA ---------- */
   /* Sits at the top of Coach Luma's column, in the open space above her. */
-  .doomsday{width:100%;margin:0 0 auto;padding:6px 6px 0;text-align:center;
+  .doomsday{display:flex;flex-direction:column;align-items:center;gap:10px;
+    width:100%;margin:0 0 auto;padding:6px 6px 0;text-align:center;
     animation:rise .7s .16s ease-out both}
-  body.chatting .doomsday{display:none}
   .doomsday-cta{
     display:inline-flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 10px;
     max-width:100%;
@@ -279,8 +279,13 @@
     border:1px solid rgba(47,125,246,.35);
     padding:4px 10px;border-radius:999px;
   }
+  /* Career Compass = the upbeat, opportunity counterpart to the dark risk button */
+  .compass-cta{background:var(--grad);border-color:rgba(255,255,255,.4)}
+  .compass-cta .dc-tag{color:#eaf4ff;background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.45)}
   @media (max-width:780px){
     .doomsday-cta{font-size:14.5px;padding:11px 16px}
+    /* On mobile the column shrinks while chatting, so tuck the CTAs away then */
+    body.chatting .doomsday{display:none}
   }
 
   /* ---------- Ecosystem section ---------- */
@@ -460,10 +465,14 @@
 
 <main class="stage">
   <div class="luma-wrap">
-    <section class="doomsday" aria-label="AI Job Risk Quick Check">
+    <section class="doomsday" aria-label="AI career quick checks">
       <button class="doomsday-cta" id="doomsdayBtn" type="button">
         <span aria-hidden="true">🔮</span> Will AI take my job?
         <span class="dc-tag">60-sec Risk Check</span>
+      </button>
+      <button class="doomsday-cta compass-cta" id="compassBtn" type="button">
+        <span aria-hidden="true">🎯</span> What jobs should I aim for?
+        <span class="dc-tag">60-sec Career Compass</span>
       </button>
     </section>
     <div class="aura" aria-hidden="true"></div>
@@ -990,6 +999,18 @@
     doomsdayBtn.addEventListener('click', function(){
       if (submitBtn.disabled) return;
       sendMessage('__doomsday_start__', 'Will AI take my job?');
+      var panel = document.querySelector('.panel');
+      if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  }
+
+  // ---- Career Compass: "What jobs should I aim for?" — same interview, roles-to-aim-for answer.
+  // If the visitor already finished the Risk Check this session, the Worker reuses those answers.
+  var compassBtn = document.getElementById('compassBtn');
+  if (compassBtn){
+    compassBtn.addEventListener('click', function(){
+      if (submitBtn.disabled) return;
+      sendMessage('__compass_start__', 'What jobs should I aim for?');
       var panel = document.querySelector('.panel');
       if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
